@@ -44,7 +44,7 @@ body {
   flex-direction: column;
   background-image: url('hero.jpg');
   background-size: cover;
-  background-position: center 30%;
+  background-position: center 38%;
 }
 .hero::before {
   content: '';
@@ -182,47 +182,7 @@ nav {
 }
 .how-step b { font-weight: 600; color: var(--white); }
 
-/* AI detection box over the surfer */
-.detect {
-  position: relative;
-  align-self: center;
-  justify-self: center;
-  width: clamp(220px, 22vw, 330px);
-  aspect-ratio: 1.28;
-  pointer-events: none;
-  animation: fadeUp 1s 0.9s ease both;
-}
-.detect-frame {
-  position: absolute;
-  inset: 0;
-  border: 2.5px solid #4BFF7E;
-  box-shadow: 0 0 0 1px rgba(8,52,74,0.15), 0 0 24px rgba(75,255,126,0.35) inset;
-  animation: detectPulse 2.6s ease-in-out infinite;
-}
-@keyframes detectPulse {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(8,52,74,0.15), 0 0 24px rgba(75,255,126,0.25) inset; }
-  50% { box-shadow: 0 0 0 1px rgba(8,52,74,0.15), 0 0 38px rgba(75,255,126,0.5) inset; }
-}
-.detect-labels {
-  position: absolute;
-  bottom: calc(100% + 10px);
-  left: 0;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  line-height: 1.5;
-  color: var(--white);
-  text-shadow: 0 1px 10px rgba(8,52,74,0.55);
-  white-space: nowrap;
-}
-.detect-scanline {
-  position: absolute;
-  left: 0; right: 0;
-  height: 1.5px;
-  background: linear-gradient(90deg, transparent, rgba(75,255,126,0.9), transparent);
-  animation: scanMove 3.2s ease-in-out infinite;
-}
-@keyframes scanMove { 0%, 100% { top: 8%; } 50% { top: 90%; } }
+/* surfer + detection box are baked into the hero photo */
 
 /* ================= GLASS FORM ================= */
 .finder {
@@ -678,8 +638,7 @@ footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.14); 
     padding-top: 8px;
     align-content: start;
   }
-  .hero { background-position: 62% 30%; }
-  .detect { display: none; }
+  .hero { background-position: 42% 38%; }
   .finder { grid-column: 1; max-width: 460px; }
   .hero::before {
     background: linear-gradient(180deg, rgba(10,42,68,0.6) 0%, rgba(10,42,68,0.25) 40%, rgba(10,42,68,0.55) 100%);
@@ -720,11 +679,8 @@ footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.14); 
       </div>
     </div>
 
-    <!-- CENTER: AI detection box over the surfer in the photo -->
-    <div class="detect">
-      <div class="detect-labels">SWIMWEAR: BLACK<br>SURFBOARD: YELLOW</div>
-      <div class="detect-frame"><div class="detect-scanline"></div></div>
-    </div>
+    <!-- CENTER: surfer + detection box are part of the hero photo -->
+    <div></div>
 
     <!-- RIGHT: GLASS FINDER -->
     <div class="finder">
