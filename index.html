@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OMBAK — Find your surf footage</title>
+<meta name="description" content="Drones film every session in Lombok. Upload one photo, tell us when and where you surfed — our AI finds your waves in every pilot's footage.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0A2A44;
+  --ocean: #0E4D73;
+  --blue: #1B7FB8;
+  --sky: #58B7E3;
+  --ice: #EFF7FC;
+  --white: #FFFFFF;
+  --glass: rgba(255,255,255,0.14);
+  --glass-line: rgba(255,255,255,0.35);
+  --font-body: 'Hanken Grotesk', sans-serif;
+  --font-serif: 'Instrument Serif', serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--navy);
+  background: var(--ice);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--sky); color: var(--navy); }
+
+/* ================= HERO ================= */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background-image: url('hero.jpg');
+  background-size: cover;
+  background-position: center 30%;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(10,42,68,0.55) 0%, rgba(10,42,68,0.18) 32%, rgba(10,42,68,0) 50%, rgba(10,42,68,0.12) 70%, rgba(10,42,68,0.35) 100%),
+    linear-gradient(180deg, rgba(10,42,68,0.35) 0%, rgba(10,42,68,0) 22%, rgba(10,42,68,0) 70%, rgba(10,42,68,0.4) 100%);
+}
+
+/* nav */
+nav {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 26px clamp(20px, 4vw, 56px);
+}
+.logo {
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.22em;
+  color: var(--white);
+  text-decoration: none;
+}
+.logo span { color: var(--sky); }
+.nav-right {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.85);
+}
+
+/* hero layout */
+.hero-grid {
+  position: relative;
+  z-index: 5;
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(320px, 460px) 1fr minmax(330px, 410px);
+  gap: 24px;
+  align-items: center;
+  padding: 20px clamp(20px, 4vw, 56px) 56px;
+  max-width: 1560px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* left column */
+.hero-left { color: var(--white); }
+.subtitle {
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--sky);
+  margin-bottom: 18px;
+  animation: rise 0.8s 0.1s cubic-bezier(0.2,0.8,0.2,1) both;
+}
+.hero-left h1 {
+  font-weight: 300;
+  font-size: clamp(38px, 3.6vw, 58px);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  margin-bottom: 20px;
+  animation: rise 0.8s 0.2s cubic-bezier(0.2,0.8,0.2,1) both;
+}
+.hero-left h1 em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  color: #BFE5F7;
+}
+.hero-left h1 strong { font-weight: 700; }
+.hero-desc {
+  font-size: 16px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.88);
+  max-width: 400px;
+  margin-bottom: 34px;
+  animation: rise 0.8s 0.3s cubic-bezier(0.2,0.8,0.2,1) both;
+}
+@keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+
+/* how it works — compact */
+.how {
+  margin-bottom: 38px;
+  animation: rise 0.8s 0.4s cubic-bezier(0.2,0.8,0.2,1) both;
+}
+.how-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 14px;
+}
+.how-step {
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+  padding: 9px 0;
+  border-top: 1px solid rgba(255,255,255,0.22);
+  font-size: 14.5px;
+  color: rgba(255,255,255,0.92);
+}
+.how-step:last-child { border-bottom: 1px solid rgba(255,255,255,0.22); }
+.how-step .n {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--sky);
+  flex-shrink: 0;
+  width: 22px;
+}
+.how-step b { font-weight: 600; color: var(--white); }
+
+.pilot-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--white);
+  text-decoration: none;
+  padding: 14px 26px;
+  border: 1.5px solid rgba(255,255,255,0.55);
+  border-radius: 100px;
+  backdrop-filter: blur(6px);
+  background: rgba(255,255,255,0.08);
+  transition: background 0.2s, border-color 0.2s;
+  animation: rise 0.8s 0.5s cubic-bezier(0.2,0.8,0.2,1) both;
+}
+.pilot-cta:hover { background: rgba(255,255,255,0.2); border-color: var(--white); }
+.pilot-cta .arr { transition: transform 0.2s; }
+.pilot-cta:hover .arr { transform: translateX(4px); }
+
+/* ================= GLASS FORM ================= */
+.finder {
+  grid-column: 3;
+  background: var(--glass);
+  border: 1px solid var(--glass-line);
+  border-radius: 22px;
+  backdrop-filter: blur(18px) saturate(1.3);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  padding: 26px 26px 24px;
+  color: var(--white);
+  box-shadow: 0 24px 60px rgba(10,42,68,0.35);
+  animation: rise 0.9s 0.35s cubic-bezier(0.2,0.8,0.2,1) both;
+}
+.finder h2 {
+  font-weight: 600;
+  font-size: 21px;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+.finder .fsub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.75);
+  margin-bottom: 20px;
+}
+
+.f-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.8);
+  margin: 15px 0 7px;
+}
+.f-label:first-of-type { margin-top: 0; }
+
+.dropzone {
+  border: 1.5px dashed rgba(255,255,255,0.5);
+  border-radius: 14px;
+  background: rgba(255,255,255,0.07);
+  padding: 18px 14px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s, border-color 0.2s;
+}
+.dropzone:hover, .dropzone.dragover { background: rgba(255,255,255,0.16); border-color: var(--white); }
+.dropzone .dz-text { font-size: 13px; color: rgba(255,255,255,0.85); }
+.dropzone .dz-text strong { color: var(--white); font-weight: 600; }
+.dropzone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.dropzone.has-photo { padding: 0; border-style: solid; overflow: hidden; }
+.dz-preview { display: block; width: 100%; height: 120px; object-fit: cover; }
+
+.kit-signature { display: none; margin-top: 10px; }
+.kit-signature.show { display: block; animation: fadeUp 0.35s ease both; }
+.kit-signature .ks-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.75);
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.kit-signature .ks-label em { font-style: normal; color: #9FE0B8; }
+.swatches { display: flex; gap: 6px; }
+.swatch { flex: 1; height: 16px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.5); }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+select, input[type="date"] {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 11px 13px;
+  border: 1.5px solid rgba(255,255,255,0.4);
+  border-radius: 11px;
+  background: rgba(255,255,255,0.1);
+  color: var(--white);
+  appearance: none;
+  color-scheme: dark;
+}
+select:focus, input:focus { outline: 2px solid var(--sky); outline-offset: 1px; }
+select option { color: var(--navy); background: var(--white); }
+.select-wrap { position: relative; }
+.select-wrap::after {
+  content: '';
+  position: absolute;
+  right: 14px; top: 50%;
+  width: 7px; height: 7px;
+  border-right: 1.5px solid rgba(255,255,255,0.8);
+  border-bottom: 1.5px solid rgba(255,255,255,0.8);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.board-toggle {
+  display: flex;
+  border: 1.5px solid rgba(255,255,255,0.4);
+  border-radius: 11px;
+  overflow: hidden;
+}
+.board-toggle button {
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 6px;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.8);
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.board-toggle button + button { border-left: 1.5px solid rgba(255,255,255,0.4); }
+.board-toggle button.active { background: var(--white); color: var(--navy); }
+.ai-note { font-size: 11.5px; color: rgba(255,255,255,0.65); margin-top: 8px; }
+.ai-note b { color: #BFE5F7; font-weight: 600; }
+
+.find-btn {
+  width: 100%;
+  margin-top: 20px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 15px;
+  border: none;
+  border-radius: 100px;
+  background: var(--white);
+  color: var(--navy);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 10px 26px rgba(10,42,68,0.3);
+}
+.find-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(10,42,68,0.4); }
+.find-btn:active { transform: translateY(0); }
+
+/* scroll hint */
+.credit {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.55);
+}
+
+/* ================= RESULTS ================= */
+#resultsSection { display: none; background: var(--ice); }
+#resultsSection.show { display: block; }
+.section-inner { max-width: 1160px; margin: 0 auto; padding: 72px clamp(20px, 4vw, 56px); }
+
+.scan-card {
+  background: var(--white);
+  border: 1px solid #D8E9F4;
+  border-radius: 18px;
+  padding: 28px 30px;
+  box-shadow: 0 14px 40px rgba(14,77,115,0.08);
+  font-size: 14px;
+  min-height: 260px;
+}
+.scan-line { display: flex; gap: 12px; padding: 5px 0; opacity: 0; animation: fadeUp 0.3s ease forwards; color: var(--ocean); }
+.scan-line .t { color: var(--sky); font-weight: 600; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.scan-line .ok { color: #199A6B; font-weight: 600; }
+.scan-line .hl { color: var(--blue); font-weight: 700; }
+.scan-bar { margin-top: 18px; height: 8px; border-radius: 100px; background: #E2EFF8; position: relative; overflow: hidden; }
+.scan-bar .fill { position: absolute; inset: 0; width: 0%; border-radius: 100px; background: linear-gradient(90deg, var(--sky), var(--blue)); transition: width 0.4s ease; }
+
+.results { display: none; }
+.results.show { display: block; animation: fadeUp 0.4s ease both; }
+.results-meta { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 6px; }
+.results-meta h3 { font-weight: 600; font-size: 28px; letter-spacing: -0.01em; }
+.results-meta h3 em { font-family: var(--font-serif); font-style: italic; color: var(--blue); }
+.results-meta .mono-note { font-size: 12.5px; color: #6D93AB; }
+.preview-notice {
+  display: inline-block;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ocean);
+  background: #DDF0FB;
+  border: 1px solid #BCDFF2;
+  border-radius: 100px;
+  padding: 7px 16px;
+  margin-bottom: 28px;
+}
+
+.clip-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+.clip {
+  background: var(--white);
+  border: 1px solid #D8E9F4;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(14,77,115,0.07);
+  transition: transform 0.18s, box-shadow 0.18s;
+  animation: fadeUp 0.45s ease both;
+}
+.clip:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(14,77,115,0.14); }
+.clip-thumb { position: relative; overflow: hidden; }
+.clip-thumb svg { display: block; width: 100%; height: auto; }
+.wm {
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='185' height='105'%3E%3Ctext x='6' y='55' font-family='Hanken Grotesk,sans-serif' font-size='12' font-weight='700' fill='white' opacity='0.38'%3EOMBAK %26%23169; PREVIEW%3C/text%3E%3C/svg%3E");
+  transform: rotate(-15deg);
+}
+.wm-tag {
+  position: absolute;
+  bottom: 8px; left: 8px;
+  background: rgba(10,42,68,0.72);
+  color: #CFEBFA;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: 100px;
+  backdrop-filter: blur(4px);
+}
+.clip-match {
+  position: absolute;
+  top: 8px; left: 8px;
+  background: rgba(255,255,255,0.92);
+  color: var(--navy);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 100px;
+}
+.clip-match.hot { background: var(--blue); color: var(--white); }
+.clip-dur {
+  position: absolute;
+  top: 8px; right: 8px;
+  background: rgba(10,42,68,0.72);
+  color: var(--white);
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 100px;
+}
+.clip-play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transition: opacity 0.15s;
+  background: rgba(10,42,68,0.25);
+  cursor: pointer;
+}
+.clip:hover .clip-play { opacity: 1; }
+.clip-play .tri {
+  width: 48px; height: 48px;
+  background: rgba(255,255,255,0.95);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  padding-left: 3px;
+  color: var(--navy);
+}
+.clip-body { padding: 14px 16px 16px; }
+.clip-title { font-weight: 600; font-size: 15.5px; margin-bottom: 2px; }
+.clip-pilot { font-size: 12px; color: #6D93AB; margin-bottom: 12px; }
+.clip-pilot .star { color: #E9A93D; }
+.clip-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.clip-price { font-weight: 700; font-size: 15px; }
+.clip-price small { display: block; font-weight: 400; font-size: 10.5px; color: #6D93AB; }
+.clip-add {
+  font-family: var(--font-body);
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 9px 16px;
+  border: none;
+  border-radius: 100px;
+  background: var(--blue);
+  color: var(--white);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.12s;
+}
+.clip-add:hover { background: var(--ocean); transform: translateY(-1px); }
+.clip-add.added { background: #199A6B; }
+
+/* cart bar */
+.cart-bar {
+  display: none;
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  background: var(--navy);
+  color: var(--white);
+  border-radius: 100px;
+  box-shadow: 0 16px 40px rgba(10,42,68,0.4);
+  padding: 12px 12px 12px 24px;
+  align-items: center;
+  gap: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  animation: rise 0.35s ease both;
+}
+.cart-bar.show { display: flex; }
+.cart-bar button {
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 11px 22px;
+  border: none;
+  border-radius: 100px;
+  background: var(--sky);
+  color: var(--navy);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.cart-bar button:hover { background: #7ECAEC; }
+
+/* ================= MODAL ================= */
+.modal-veil {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(10,42,68,0.5);
+  backdrop-filter: blur(6px);
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-veil.show { display: flex; }
+.modal {
+  background: var(--white);
+  border-radius: 22px;
+  box-shadow: 0 30px 80px rgba(10,42,68,0.4);
+  max-width: 440px;
+  width: 100%;
+  animation: rise 0.3s ease both;
+  max-height: 90vh;
+  overflow: auto;
+}
+.modal-head {
+  padding: 20px 24px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: 19px;
+}
+.modal-body { padding: 18px 24px 26px; }
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13.5px;
+  padding: 9px 0;
+  border-bottom: 1px solid #E4F0F8;
+  color: var(--ocean);
+}
+.receipt-row.total { border-bottom: none; border-top: 2px solid var(--navy); margin-top: 8px; padding-top: 14px; font-weight: 700; font-size: 15.5px; color: var(--navy); }
+.receipt-row .muted { color: #6D93AB; }
+.split-viz { display: flex; height: 26px; border-radius: 100px; overflow: hidden; margin: 18px 0 6px; }
+.split-viz .pilot-cut { background: var(--blue); flex: 9; display: grid; place-items: center; color: var(--white); font-size: 10.5px; font-weight: 700; }
+.split-viz .ombak-cut { background: var(--navy); flex: 1; min-width: 46px; display: grid; place-items: center; color: var(--white); font-size: 10.5px; font-weight: 700; }
+.split-note { font-size: 11px; color: #6D93AB; margin-bottom: 6px; }
+.license-note {
+  font-size: 11.5px;
+  color: #547891;
+  background: var(--ice);
+  border-radius: 12px;
+  padding: 11px 14px;
+  margin-top: 14px;
+}
+.license-note b { color: var(--navy); }
+.modal .find-btn { margin-top: 16px; background: var(--blue); color: var(--white); }
+.modal .find-btn:hover { background: var(--ocean); }
+.modal-close { background: #EFF7FC; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 15px; cursor: pointer; color: var(--navy); }
+.paid-stamp { text-align: center; padding: 26px 10px 6px; }
+.paid-stamp .stamp {
+  display: inline-block;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 30px;
+  color: #199A6B;
+  border: 2.5px solid #199A6B;
+  border-radius: 14px;
+  padding: 8px 24px;
+  transform: rotate(-4deg);
+}
+.paid-stamp p { font-size: 13px; color: #547891; margin-top: 18px; }
+
+/* ================= PILOTS ================= */
+#pilots { background: var(--navy); color: var(--white); }
+.pilots-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 72px); align-items: center; }
+#pilots .subtitle { color: var(--sky); }
+#pilots h2 { font-weight: 300; font-size: clamp(30px, 3vw, 44px); line-height: 1.15; margin-bottom: 16px; }
+#pilots h2 em { font-family: var(--font-serif); font-style: italic; color: #BFE5F7; }
+#pilots .p-desc { color: rgba(255,255,255,0.8); font-size: 15.5px; max-width: 440px; margin-bottom: 28px; }
+.p-points { display: grid; gap: 12px; }
+.p-point {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 16px;
+  padding: 16px 18px;
+}
+.p-point .ic { font-size: 20px; line-height: 1.3; }
+.p-point b { display: block; font-size: 14.5px; font-weight: 600; }
+.p-point span { font-size: 13px; color: rgba(255,255,255,0.72); }
+.p-point b em { font-style: normal; color: var(--sky); }
+.beta-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 28px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--navy);
+  background: var(--white);
+  text-decoration: none;
+  padding: 15px 30px;
+  border-radius: 100px;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+}
+.beta-cta:hover { transform: translateY(-2px); }
+
+/* ================= FOOTER ================= */
+footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.14); }
+.footer-row {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 26px clamp(20px, 4vw, 56px);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.5);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1080px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 34px;
+    padding-top: 8px;
+    align-content: start;
+  }
+  .hero { background-position: 62% 30%; }
+  .finder { grid-column: 1; max-width: 460px; }
+  .hero::before {
+    background: linear-gradient(180deg, rgba(10,42,68,0.6) 0%, rgba(10,42,68,0.25) 40%, rgba(10,42,68,0.55) 100%);
+  }
+  .credit { display: none; }
+}
+@media (max-width: 700px) {
+  .pilots-grid { grid-template-columns: 1fr; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="top">
+  <nav>
+    <a class="logo" href="#top">OMBAK<span>.</span></a>
+    <div class="nav-right">Lombok · Indonesia</div>
+  </nav>
+
+  <div class="hero-grid">
+    <!-- LEFT -->
+    <div class="hero-left">
+      <div class="subtitle">Drone footage marketplace</div>
+      <h1>The drone got <em>your wave.</em><br><strong>We'll find it.</strong></h1>
+      <p class="hero-desc">Every session in Lombok is filmed from above. One photo of you and your board, your spot and your session time — our AI scans every pilot's footage and finds your waves.</p>
+
+      <div class="how">
+        <div class="how-title">How it works</div>
+        <div class="how-step"><span class="n">1</span><div><b>Upload one photo</b> — AI reads your board & outfit colors</div></div>
+        <div class="how-step"><span class="n">2</span><div><b>Preview your waves</b> — watermarked clips, confirm it's you</div></div>
+        <div class="how-step"><span class="n">3</span><div><b>Unlock clean 4K</b> — pilot keeps 90% of every sale</div></div>
+      </div>
+
+      <a class="pilot-cta" href="#pilots">I'm a drone pilot <span class="arr">→</span></a>
+    </div>
+
+    <!-- CENTER: the surfer in the photo -->
+    <div></div>
+
+    <!-- RIGHT: GLASS FINDER -->
+    <div class="finder">
+      <h2>Find your footage</h2>
+      <div class="fsub">Takes 30 seconds. Previews are free.</div>
+
+      <label class="f-label">Photo of you + your board</label>
+      <div class="dropzone" id="dropzone">
+        <span class="dz-text"><strong>Drop a photo</strong> or tap to choose</span>
+        <input type="file" id="photoInput" accept="image/*">
+      </div>
+      <div class="kit-signature" id="kitSig">
+        <div class="ks-label"><span>Kit detected by AI</span><em>✓</em></div>
+        <div class="swatches" id="swatches"></div>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <label class="f-label">Spot</label>
+          <div class="select-wrap">
+            <select id="spotSelect">
+              <option value="mawi">Mawi</option>
+              <option value="gerupuk-inside">Gerupuk — Inside</option>
+              <option value="gerupuk-outside">Gerupuk — Outside</option>
+              <option value="tanjung-aan">Tanjung Aan</option>
+              <option value="selong">Selong Belanak</option>
+              <option value="are-guling">Are Guling</option>
+              <option value="ekas">Ekas Inside</option>
+              <option value="deserts">Desert Point</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="f-label">Date</label>
+          <input type="date" id="dateInput">
+        </div>
+      </div>
+
+      <label class="f-label">Time in the water</label>
+      <div class="grid-2">
+        <div class="select-wrap">
+          <select id="timeFrom">
+            <option>05:30</option><option>06:00</option><option selected>06:30</option><option>07:00</option><option>07:30</option><option>08:00</option><option>09:00</option><option>15:00</option><option>16:00</option><option>16:30</option><option>17:00</option>
+          </select>
+        </div>
+        <div class="select-wrap">
+          <select id="timeTo">
+            <option>07:00</option><option>07:30</option><option>08:00</option><option selected>08:30</option><option>09:00</option><option>10:00</option><option>17:00</option><option>17:30</option><option>18:00</option><option>18:30</option>
+          </select>
+        </div>
+      </div>
+
+      <label class="f-label">Board</label>
+      <div class="board-toggle" id="boardToggle">
+        <button class="active" data-board="shortboard" onclick="setBoard(this)">Shortboard</button>
+        <button data-board="longboard" onclick="setBoard(this)">Longboard</button>
+      </div>
+      <div class="ai-note">Colors are <b>detected automatically</b> from your photo.</div>
+
+      <button class="find-btn" onclick="runMatch()">Find my footage</button>
+    </div>
+  </div>
+  <div class="credit">📍 Kuta · Lombok</div>
+</header>
+
+<!-- ================= RESULTS ================= -->
+<section id="resultsSection">
+  <div class="section-inner">
+    <div class="scanner" id="scanner" style="display:none;">
+      <div class="scan-card" id="scanConsole"></div>
+    </div>
+    <div class="results" id="results">
+      <div class="results-meta">
+        <h3>We found <em id="matchCount">6 clips</em> of you</h3>
+        <span class="mono-note" id="resultsNote"></span>
+      </div>
+      <div class="preview-notice">🔒 Previews are watermarked 720p — buying unlocks clean 4K, licensed from the pilot</div>
+      <div class="clip-grid" id="clipGrid"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PILOTS ================= -->
+<section id="pilots">
+  <div class="section-inner pilots-grid">
+    <div>
+      <div class="subtitle">For drone pilots</div>
+      <h2>You film everyone.<br><em>Sell to everyone.</em></h2>
+      <p class="p-desc">Today you sell to the two surfers who happen to find you on the beach. OMBAK matches your footage to every surfer who searches — and sells it while you're already flying the next session.</p>
+      <a class="beta-cta" href="https://wa.me/?text=Hi!%20I%20fly%20drones%20at%20a%20surf%20spot%20in%20Lombok%20and%20I%20want%20to%20join%20the%20OMBAK%20beta." target="_blank" rel="noopener">Join the beta — it's free →</a>
+    </div>
+    <div class="p-points">
+      <div class="p-point"><span class="ic">💸</span><div><b>Keep <em>90%</em> of every sale</b><span>Paid out weekly via GoPay, QRIS or bank transfer.</span></div></div>
+      <div class="p-point"><span class="ic">🔒</span><div><b>Your footage stays yours</b><span>Every preview is watermarked with your name. © never leaves you — surfers buy a personal-use license.</span></div></div>
+      <div class="p-point"><span class="ic">☁️</span><div><b>Light uploads, zero scrubbing</b><span>A compressed proxy uploads for matching. Your 4K original transfers only when a clip sells.</span></div></div>
+      <div class="p-point"><span class="ic">🛸</span><div><b>Upload once, done</b><span>Drop your SD card dump, tag the spot. The AI does the rest — no DMs, no searching for strangers.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-row">
+    <span>OMBAK © 2026 — Kuta, Lombok</span>
+    <span><em style="font-family:var(--font-serif)">ombak</em> — Indonesian for "wave"</span>
+    <span>All footage © its pilot · beta</span>
+  </div>
+</footer>
+
+<!-- CART BAR -->
+<div class="cart-bar" id="cartBar">
+  <span id="cartSummary"></span>
+  <button onclick="openCheckout()">Checkout →</button>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-veil" id="modalVeil" onclick="if(event.target===this) closeModal()">
+  <div class="modal">
+    <div class="modal-head">Checkout <button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+/* ============ DATA ============ */
+const SPOT_NAMES = {
+  'mawi': 'Mawi', 'gerupuk-inside': 'Gerupuk Inside', 'gerupuk-outside': 'Gerupuk Outside',
+  'tanjung-aan': 'Tanjung Aan', 'selong': 'Selong Belanak', 'are-guling': 'Are Guling',
+  'ekas': 'Ekas Inside', 'deserts': 'Desert Point'
+};
+
+const PILOTS = [
+  { name: '@aerial.agus', rating: 4.9 },
+  { name: '@lombok.from.above', rating: 4.8 },
+  { name: '@dronny_wayan', rating: 5.0 },
+  { name: '@skyjuice.id', rating: 4.7 },
+  { name: '@birdseye.bayu', rating: 4.9 },
+];
+
+const CLIP_TEMPLATES = [
+  { title: 'Set wave takeoff', dur: '0:18', mins: 9,  match: 96, price: 150000 },
+  { title: 'Long wall ride',   dur: '0:34', mins: 26, match: 93, price: 195000 },
+  { title: 'Duck dive sequence', dur: '0:12', mins: 41, match: 88, price: 90000 },
+  { title: 'Cutback combo',    dur: '0:22', mins: 58, match: 86, price: 165000 },
+  { title: 'Paddle-out wide shot', dur: '0:45', mins: 73, match: 79, price: 120000 },
+  { title: 'Golden hour closer', dur: '0:29', mins: 96, match: 91, price: 210000 },
+];
+
+const THUMB_PALETTES = [
+  ['#58B7E3','#1B7FB8','#0E4D73'], ['#7ECAEC','#2E8FC4','#0A2A44'],
+  ['#9FD8F0','#1B7FB8','#0C3B5E'], ['#58B7E3','#146A9E','#0A2A44'],
+  ['#BCE3F5','#2E8FC4','#0E4D73'], ['#6FC2E8','#1B7FB8','#08243B'],
+];
+
+/* ============ DEFAULTS ============ */
+document.getElementById('dateInput').value = new Date().toISOString().slice(0, 10);
+
+let board = 'shortboard';
+function setBoard(btn) {
+  board = btn.dataset.board;
+  document.querySelectorAll('.board-toggle button').forEach(b => b.classList.toggle('active', b === btn));
+}
+
+/* ============ PHOTO UPLOAD + COLOR EXTRACTION ============ */
+let kitColors = null;
+const dropzone = document.getElementById('dropzone');
+const photoInput = document.getElementById('photoInput');
+
+['dragover','dragenter'].forEach(ev => dropzone.addEventListener(ev, e => { e.preventDefault(); dropzone.classList.add('dragover'); }));
+['dragleave','drop'].forEach(ev => dropzone.addEventListener(ev, e => { e.preventDefault(); dropzone.classList.remove('dragover'); }));
+dropzone.addEventListener('drop', e => { if (e.dataTransfer.files[0]) handlePhoto(e.dataTransfer.files[0]); });
+photoInput.addEventListener('change', e => { if (e.target.files[0]) handlePhoto(e.target.files[0]); });
+
+function handlePhoto(file) {
+  if (!file.type.startsWith('image/')) return;
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    dropzone.classList.add('has-photo');
+    dropzone.innerHTML = `<img class="dz-preview" src="${url}" alt="your kit"><input type="file" id="photoInput2" accept="image/*">`;
+    document.getElementById('photoInput2').addEventListener('change', e => { if (e.target.files[0]) handlePhoto(e.target.files[0]); });
+    extractKitColors(img);
+  };
+  img.src = url;
+}
+
+// genuinely extracts dominant colors from the uploaded photo — client-side stand-in
+// for the appearance-embedding model the production matcher runs server-side
+function extractKitColors(img) {
+  const canvas = document.createElement('canvas');
+  const size = 64;
+  canvas.width = size; canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, size, size);
+  const data = ctx.getImageData(0, 0, size, size).data;
+  const buckets = {};
+  for (let i = 0; i < data.length; i += 4) {
+    const key = `${data[i] >> 5},${data[i+1] >> 5},${data[i+2] >> 5}`;
+    if (!buckets[key]) buckets[key] = { n: 0, r: 0, g: 0, b: 0 };
+    buckets[key].n++;
+    buckets[key].r += data[i]; buckets[key].g += data[i+1]; buckets[key].b += data[i+2];
+  }
+  kitColors = Object.values(buckets).sort((a, b) => b.n - a.n).slice(0, 4)
+    .map(x => [Math.round(x.r/x.n), Math.round(x.g/x.n), Math.round(x.b/x.n)]);
+  document.getElementById('swatches').innerHTML = kitColors.map(c =>
+    `<div class="swatch" style="background:rgb(${c[0]},${c[1]},${c[2]})"></div>`
+  ).join('');
+  document.getElementById('kitSig').classList.add('show');
+}
+
+/* ============ MATCHING (demo pipeline) ============ */
+let matching = false;
+
+function runMatch() {
+  if (matching) return;
+  if (!kitColors) {
+    dropzone.style.borderColor = '#FF8A70';
+    dropzone.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }], { duration: 260 });
+    dropzone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  matching = true;
+  const spot = SPOT_NAMES[document.getElementById('spotSelect').value];
+  const from = document.getElementById('timeFrom').value;
+  const to = document.getElementById('timeTo').value;
+
+  const section = document.getElementById('resultsSection');
+  section.classList.add('show');
+  document.getElementById('results').classList.remove('show');
+  const scanner = document.getElementById('scanner');
+  scanner.style.display = 'block';
+  const con = document.getElementById('scanConsole');
+  con.innerHTML = '';
+  section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  const totalClips = 38 + Math.floor((kitColors[0][0] + kitColors[0][1]) % 25);
+
+  const lines = [
+    [`<span class="t">00:00</span> Searching <span class="hl">${spot}</span>, ${from}–${to}, ${board}`, 200],
+    [`<span class="t">00:00</span> Kit signature loaded from your photo`, 700],
+    [`<span class="t">00:01</span> <span class="ok">${totalClips} clips</span> from <span class="ok">4 pilots</span> overlap your session`, 1400],
+    [`<span class="t">00:02</span> Detecting surfers in every frame…`, 2200],
+    [`<span class="t">00:04</span> ${totalClips * 3 + 11} surfer tracks found — comparing against your kit`, 3100],
+    [`<span class="t">00:06</span> <span class="hl">Match</span> — ${spot} 07:09, confidence 96%`, 4200],
+    [`<span class="t">00:07</span> <span class="hl">Match</span> — ${spot} 07:26, confidence 93%`, 4800],
+    [`<span class="t">00:08</span> <span class="hl">4 more matches</span> — watermarking previews…`, 5400],
+    [`<span class="t">00:09</span> <span class="ok">Done — 6 clips of you, 2:40 total footage</span>`, 6100],
+  ];
+
+  lines.forEach(([html, delay]) => {
+    setTimeout(() => {
+      const div = document.createElement('div');
+      div.className = 'scan-line';
+      div.innerHTML = html;
+      con.appendChild(div);
+    }, delay);
+  });
+
+  const bar = document.createElement('div');
+  bar.className = 'scan-bar';
+  bar.innerHTML = '<div class="fill"></div>';
+  setTimeout(() => {
+    con.appendChild(bar);
+    const fill = bar.querySelector('.fill');
+    [12, 30, 48, 70, 86, 100].forEach((w, i) => setTimeout(() => fill.style.width = w + '%', 300 + i * 850));
+  }, 1600);
+
+  setTimeout(() => {
+    scanner.style.display = 'none';
+    renderResults(spot, from);
+    matching = false;
+  }, 7000);
+}
+
+function renderResults(spot, from) {
+  const grid = document.getElementById('clipGrid');
+  const [fh, fm] = from.split(':').map(Number);
+  const startMins = fh * 60 + fm;
+
+  document.getElementById('resultsNote').textContent =
+    `${spot} · ${document.getElementById('dateInput').value} · matched by kit + spot + time`;
+
+  grid.innerHTML = CLIP_TEMPLATES.map((c, i) => {
+    const t = startMins + c.mins;
+    const hh = String(Math.floor(t / 60)).padStart(2, '0');
+    const mm = String(t % 60).padStart(2, '0');
+    const pilot = PILOTS[i % PILOTS.length];
+    const pal = THUMB_PALETTES[i];
+    return `
+    <article class="clip" style="animation-delay:${i * 0.08}s">
+      <div class="clip-thumb">
+        ${thumbSVG(pal, i)}
+        <div class="wm"></div>
+        <span class="clip-match ${c.match >= 90 ? 'hot' : ''}">${c.match}% you</span>
+        <span class="clip-dur">${c.dur}</span>
+        <span class="wm-tag">© ${pilot.name} · preview</span>
+        <div class="clip-play" title="watermarked preview (demo)"><span class="tri">▶</span></div>
+      </div>
+      <div class="clip-body">
+        <div class="clip-title">${c.title}</div>
+        <div class="clip-pilot">${hh}:${mm} · ${pilot.name} · <span class="star">★</span> ${pilot.rating}</div>
+        <div class="clip-foot">
+          <div class="clip-price">Rp ${(c.price/1000).toFixed(0)}K<small>clean 4K · no watermark</small></div>
+          <button class="clip-add" onclick="toggleCart(${i}, this)">Add</button>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+
+  document.getElementById('results').classList.add('show');
+}
+
+function thumbSVG(pal, seed) {
+  const y = 92 + (seed * 17) % 30;
+  const x = 60 + (seed * 43) % 140;
+  return `<svg viewBox="0 0 280 168" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="tg${seed}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${pal[0]}"/><stop offset="1" stop-color="${pal[1]}"/>
+    </linearGradient></defs>
+    <rect width="280" height="90" fill="url(#tg${seed})"/>
+    <rect y="90" width="280" height="78" fill="${pal[2]}"/>
+    <path d="M0 ${y} Q70 ${y-14} 140 ${y} T280 ${y}" stroke="#FFFFFF" stroke-width="3" fill="none" opacity="0.65"/>
+    <path d="M0 ${y+22} Q90 ${y+10} 180 ${y+22} T360 ${y+22}" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.35"/>
+    <path d="M${x-34} ${y+8} Q${x} ${y-30} ${x+30} ${y-8} Q${x+10} ${y+8} ${x-6} ${y+12} Z" fill="#FFFFFF" opacity="0.85"/>
+    <g transform="translate(${x},${y-12})">
+      <line x1="-8" y1="8" x2="10" y2="3" stroke="#0A2A44" stroke-width="3.5" stroke-linecap="round"/>
+      <circle cx="0" cy="-8" r="3" fill="#0A2A44"/>
+      <path d="M0 -5 L-2 2 L3 2 Z" fill="#0A2A44"/>
+    </g>
+    <rect x="${x-24}" y="${y-32}" width="52" height="46" rx="4" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="12" y="20" font-family="Hanken Grotesk, sans-serif" font-size="9" fill="#FFFFFF" opacity="0.9">● REC</text>
+    <text x="240" y="20" font-family="Hanken Grotesk, sans-serif" font-size="9" fill="#FFFFFF" opacity="0.9">80M</text>
+  </svg>`;
+}
+
+/* ============ CART + CHECKOUT ============ */
+const cart = new Set();
+
+function toggleCart(i, btn) {
+  if (cart.has(i)) {
+    cart.delete(i);
+    btn.classList.remove('added');
+    btn.textContent = 'Add';
+  } else {
+    cart.add(i);
+    btn.classList.add('added');
+    btn.textContent = '✓ Added';
+  }
+  updateCartBar();
+}
+
+function fmtRp(n) { return 'Rp ' + n.toLocaleString('id-ID'); }
+
+function updateCartBar() {
+  const bar = document.getElementById('cartBar');
+  if (cart.size === 0) { bar.classList.remove('show'); return; }
+  const total = [...cart].reduce((s, i) => s + CLIP_TEMPLATES[i].price, 0);
+  document.getElementById('cartSummary').textContent = `${cart.size} clip${cart.size > 1 ? 's' : ''} · ${fmtRp(total)}`;
+  bar.classList.add('show');
+}
+
+function openCheckout() {
+  const items = [...cart];
+  const total = items.reduce((s, i) => s + CLIP_TEMPLATES[i].price, 0);
+  const fee = Math.round(total * 0.10);
+  const pilotCut = total - fee;
+  document.getElementById('modalBody').innerHTML = `
+    ${items.map(i => `<div class="receipt-row"><span>${CLIP_TEMPLATES[i].title} <span class="muted">· ${CLIP_TEMPLATES[i].dur} · 4K</span></span><span>${fmtRp(CLIP_TEMPLATES[i].price)}</span></div>`).join('')}
+    <div class="split-viz"><div class="pilot-cut">Pilot 90%</div><div class="ombak-cut">10%</div></div>
+    <div class="split-note">Pilots receive ${fmtRp(pilotCut)} · OMBAK platform fee ${fmtRp(fee)}</div>
+    <div class="receipt-row total"><span>Total</span><span>${fmtRp(total)}</span></div>
+    <div class="license-note"><b>You get:</b> clean 4K original + vertical social crop, no watermark, personal-use license. <b>© stays with the pilot.</b></div>
+    <button class="find-btn" onclick="pay()">Pay with QRIS / GoPay / card</button>
+    <p style="font-size:11px; color:#6D93AB; margin-top:12px; text-align:center;">Instant download after payment · demo — no real charge</p>
+  `;
+  document.getElementById('modalVeil').classList.add('show');
+}
+
+function pay() {
+  document.getElementById('modalBody').innerHTML = `
+    <div class="paid-stamp">
+      <span class="stamp">Waves secured</span>
+      <p>Your clean 4K clips are rendering — originals + a<br>ready-to-post reel hit your inbox in ~2 minutes.<br><br>🤙 See you in the lineup.</p>
+    </div>
+    <button class="find-btn" onclick="closeModal()">Done</button>
+  `;
+  cart.clear();
+  updateCartBar();
+  document.querySelectorAll('.clip-add.added').forEach(b => { b.classList.remove('added'); b.textContent = 'Add'; });
+}
+
+function closeModal() { document.getElementById('modalVeil').classList.remove('show'); }
+</script>
+</body>
+</html>
