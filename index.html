@@ -51,8 +51,8 @@ body {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(10,42,68,0.55) 0%, rgba(10,42,68,0.18) 32%, rgba(10,42,68,0) 50%, rgba(10,42,68,0.12) 70%, rgba(10,42,68,0.35) 100%),
-    linear-gradient(180deg, rgba(10,42,68,0.35) 0%, rgba(10,42,68,0) 22%, rgba(10,42,68,0) 70%, rgba(10,42,68,0.4) 100%);
+    linear-gradient(90deg, rgba(8,52,74,0.6) 0%, rgba(8,52,74,0.32) 26%, rgba(8,52,74,0) 44%),
+    linear-gradient(180deg, rgba(8,52,74,0.25) 0%, rgba(8,52,74,0) 20%);
 }
 
 /* nav */
@@ -73,12 +73,33 @@ nav {
 }
 .logo span { color: var(--sky); }
 .nav-right {
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.85);
+  display: flex;
+  align-items: center;
+  gap: 26px;
 }
+.nav-link {
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: rgba(255,255,255,0.92);
+  text-decoration: none;
+  text-shadow: 0 1px 8px rgba(10,42,68,0.4);
+}
+.nav-link:hover { color: var(--white); }
+.nav-pilot {
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--white);
+  text-decoration: none;
+  padding: 10px 20px;
+  border: 1.5px solid rgba(255,255,255,0.65);
+  border-radius: 100px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(8px);
+  transition: background 0.2s;
+}
+.nav-pilot:hover { background: rgba(255,255,255,0.24); }
 
 /* hero layout */
 .hero-grid {
@@ -96,7 +117,10 @@ nav {
 }
 
 /* left column */
-.hero-left { color: var(--white); }
+.hero-left {
+  color: var(--white);
+  text-shadow: 0 1px 14px rgba(8,52,74,0.45);
+}
 .subtitle {
   font-size: 12.5px;
   font-weight: 600;
@@ -107,28 +131,22 @@ nav {
   animation: rise 0.8s 0.1s cubic-bezier(0.2,0.8,0.2,1) both;
 }
 .hero-left h1 {
-  font-weight: 300;
-  font-size: clamp(38px, 3.6vw, 58px);
-  line-height: 1.08;
-  letter-spacing: -0.01em;
-  margin-bottom: 20px;
+  font-weight: 700;
+  font-size: clamp(40px, 3.8vw, 62px);
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+  margin-bottom: 26px;
   animation: rise 0.8s 0.2s cubic-bezier(0.2,0.8,0.2,1) both;
 }
-.hero-left h1 em {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-weight: 400;
-  color: #BFE5F7;
-}
-.hero-left h1 strong { font-weight: 700; }
 .hero-desc {
-  font-size: 16px;
+  font-size: 19px;
   font-weight: 400;
-  color: rgba(255,255,255,0.88);
-  max-width: 400px;
-  margin-bottom: 34px;
+  color: rgba(255,255,255,0.95);
+  max-width: 420px;
+  margin-bottom: 14px;
   animation: rise 0.8s 0.3s cubic-bezier(0.2,0.8,0.2,1) both;
 }
+.hero-desc + .hero-desc { margin-bottom: 36px; }
 @keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
 
 /* how it works — compact */
@@ -164,27 +182,47 @@ nav {
 }
 .how-step b { font-weight: 600; color: var(--white); }
 
-.pilot-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 13.5px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--white);
-  text-decoration: none;
-  padding: 14px 26px;
-  border: 1.5px solid rgba(255,255,255,0.55);
-  border-radius: 100px;
-  backdrop-filter: blur(6px);
-  background: rgba(255,255,255,0.08);
-  transition: background 0.2s, border-color 0.2s;
-  animation: rise 0.8s 0.5s cubic-bezier(0.2,0.8,0.2,1) both;
+/* AI detection box over the surfer */
+.detect {
+  position: relative;
+  align-self: center;
+  justify-self: center;
+  width: clamp(220px, 22vw, 330px);
+  aspect-ratio: 1.28;
+  pointer-events: none;
+  animation: fadeUp 1s 0.9s ease both;
 }
-.pilot-cta:hover { background: rgba(255,255,255,0.2); border-color: var(--white); }
-.pilot-cta .arr { transition: transform 0.2s; }
-.pilot-cta:hover .arr { transform: translateX(4px); }
+.detect-frame {
+  position: absolute;
+  inset: 0;
+  border: 2.5px solid #4BFF7E;
+  box-shadow: 0 0 0 1px rgba(8,52,74,0.15), 0 0 24px rgba(75,255,126,0.35) inset;
+  animation: detectPulse 2.6s ease-in-out infinite;
+}
+@keyframes detectPulse {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(8,52,74,0.15), 0 0 24px rgba(75,255,126,0.25) inset; }
+  50% { box-shadow: 0 0 0 1px rgba(8,52,74,0.15), 0 0 38px rgba(75,255,126,0.5) inset; }
+}
+.detect-labels {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 0;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1.5;
+  color: var(--white);
+  text-shadow: 0 1px 10px rgba(8,52,74,0.55);
+  white-space: nowrap;
+}
+.detect-scanline {
+  position: absolute;
+  left: 0; right: 0;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, rgba(75,255,126,0.9), transparent);
+  animation: scanMove 3.2s ease-in-out infinite;
+}
+@keyframes scanMove { 0%, 100% { top: 8%; } 50% { top: 90%; } }
 
 /* ================= GLASS FORM ================= */
 .finder {
@@ -641,6 +679,7 @@ footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.14); 
     align-content: start;
   }
   .hero { background-position: 62% 30%; }
+  .detect { display: none; }
   .finder { grid-column: 1; max-width: 460px; }
   .hero::before {
     background: linear-gradient(180deg, rgba(10,42,68,0.6) 0%, rgba(10,42,68,0.25) 40%, rgba(10,42,68,0.55) 100%);
@@ -659,28 +698,33 @@ footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.14); 
 <header class="hero" id="top">
   <nav>
     <a class="logo" href="#top">OMBAK<span>.</span></a>
-    <div class="nav-right">Lombok · Indonesia</div>
+    <div class="nav-right">
+      <a class="nav-link" href="#how">How it works</a>
+      <a class="nav-pilot" href="#pilots">I'm a drone pilot</a>
+    </div>
   </nav>
 
   <div class="hero-grid">
     <!-- LEFT -->
     <div class="hero-left">
-      <div class="subtitle">Drone footage marketplace</div>
-      <h1>The drone got <em>your wave.</em><br><strong>We'll find it.</strong></h1>
-      <p class="hero-desc">Every session in Lombok is filmed from above. One photo of you and your board, your spot and your session time — our AI scans every pilot's footage and finds your waves.</p>
+      <div class="subtitle">Drone footage marketplace · Lombok</div>
+      <h1>Find your videos<br>in 20 seconds</h1>
+      <p class="hero-desc">Every session in Lombok is filmed from above.</p>
+      <p class="hero-desc">Upload a photo of your surfboard and you, and we'll find all your footage.</p>
 
-      <div class="how">
+      <div class="how" id="how">
         <div class="how-title">How it works</div>
         <div class="how-step"><span class="n">1</span><div><b>Upload one photo</b> — AI reads your board & outfit colors</div></div>
         <div class="how-step"><span class="n">2</span><div><b>Preview your waves</b> — watermarked clips, confirm it's you</div></div>
         <div class="how-step"><span class="n">3</span><div><b>Unlock clean 4K</b> — pilot keeps 90% of every sale</div></div>
       </div>
-
-      <a class="pilot-cta" href="#pilots">I'm a drone pilot <span class="arr">→</span></a>
     </div>
 
-    <!-- CENTER: the surfer in the photo -->
-    <div></div>
+    <!-- CENTER: AI detection box over the surfer in the photo -->
+    <div class="detect">
+      <div class="detect-labels">SWIMWEAR: BLACK<br>SURFBOARD: YELLOW</div>
+      <div class="detect-frame"><div class="detect-scanline"></div></div>
+    </div>
 
     <!-- RIGHT: GLASS FINDER -->
     <div class="finder">
