@@ -107,6 +107,22 @@ select option { color: var(--navy); background: var(--white); }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 22px; }
 .grid-2 .f-label { margin-top: 0; }
 
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 14px;
+  border-radius: 100px;
+  border: 1.5px solid rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.85);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.chip:hover { border-color: var(--white); }
+.chip.on { background: var(--white); color: var(--navy); border-color: var(--white); }
+
 input[type="file"] { color: rgba(255,255,255,0.85); font-size: 13.5px; padding: 0; border: none; background: none; }
 input[type="file"]::file-selector-button {
   font-family: var(--font-body);
@@ -215,11 +231,16 @@ input[type="file"]::file-selector-button {
         <input type="text" id="pName" placeholder="Agus" autocomplete="name">
         <label class="f-label">Instagram / brand name <span class="hint">— goes on your watermark</span></label>
         <input type="text" id="pInsta" placeholder="@aerial.agus" oninput="drawWM()">
-        <label class="f-label">Home spot</label>
-        <div class="select-wrap">
-          <select id="pSpot">
-            <option>Mawi</option><option>Gerupuk — Inside</option><option>Gerupuk — Outside</option><option>Tanjung Aan</option><option>Selong Belanak</option><option>Are Guling</option><option>Ekas</option><option>Desert Point</option>
-          </select>
+        <label class="f-label">Home spots <span class="hint">— tap all the spots you fly</span></label>
+        <div class="chips" id="pSpots">
+          <button type="button" class="chip" onclick="toggleChip(this)">Mawi</button>
+          <button type="button" class="chip" onclick="toggleChip(this)">Gerupuk — Inside</button>
+          <button type="button" class="chip" onclick="toggleChip(this)">Gerupuk — Outside</button>
+          <button type="button" class="chip" onclick="toggleChip(this)">Tanjung Aan</button>
+          <button type="button" class="chip" onclick="toggleChip(this)">Selong Belanak</button>
+          <button type="button" class="chip" onclick="toggleChip(this)">Are Guling</button>
+          <button type="button" class="chip" onclick="toggleChip(this)">Ekas</button>
+          <button type="button" class="chip" onclick="toggleChip(this)">Desert Point</button>
         </div>
       </div>
       <label class="f-label">Email</label>
@@ -287,39 +308,47 @@ input[type="file"]::file-selector-button {
 /* ============ WATERMARK PREVIEW ============ */
 const wmCanvas = document.getElementById('wmCanvas');
 const wmCtx = wmCanvas.getContext('2d');
+const wmImg = new Image();
+let wmReady = false;
+wmImg.onload = () => { wmReady = true; drawWM(); };
+wmImg.src = 'hero.jpg';
+
+function drawCover(img, W, H) {
+  const ir = img.width / img.height, cr = W / H;
+  let dw, dh, dx, dy;
+  if (ir > cr) { dh = H; dw = H * ir; dx = (W - dw) / 2; dy = 0; }
+  else { dw = W; dh = W / ir; dx = 0; dy = (H - dh) / 2; }
+  wmCtx.drawImage(img, dx, dy, dw, dh);
+}
+
 function drawWM() {
   const W = wmCanvas.width, H = wmCanvas.height;
   let handle = (document.getElementById('pInsta').value || '@yourname').trim();
   if (!handle.startsWith('@')) handle = '@' + handle;
-  // "footage" backdrop
-  const g = wmCtx.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0, '#3AA0C9'); g.addColorStop(0.55, '#1B7FB8'); g.addColorStop(1, '#0C3B5E');
-  wmCtx.fillStyle = g; wmCtx.fillRect(0, 0, W, H);
-  // a couple of wave lines + a tiny surfer so it reads as footage
-  wmCtx.strokeStyle = 'rgba(255,255,255,0.35)'; wmCtx.lineWidth = 3;
-  for (let i = 0; i < 3; i++) {
-    wmCtx.beginPath();
-    const y = 150 + i * 60;
-    wmCtx.moveTo(0, y);
-    for (let x = 0; x <= W; x += 40) wmCtx.lineTo(x, y - Math.sin((x / 60) + i) * 10);
-    wmCtx.stroke();
+  // real surf photo standing in for the pilot's footage
+  if (wmReady) {
+    drawCover(wmImg, W, H);
+  } else {
+    const g = wmCtx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#3AA0C9'); g.addColorStop(1, '#0C3B5E');
+    wmCtx.fillStyle = g; wmCtx.fillRect(0, 0, W, H);
   }
-  wmCtx.fillStyle = 'rgba(10,42,68,0.9)';
-  wmCtx.beginPath(); wmCtx.arc(300, 175, 7, 0, 7); wmCtx.fill();
-  wmCtx.fillRect(280, 188, 46, 5);
-  // green detection box
-  wmCtx.strokeStyle = '#4BFF7E'; wmCtx.lineWidth = 2.5;
-  wmCtx.strokeRect(268, 150, 66, 58);
-  // diagonal repeating watermark
+  // subtle scrim so the watermark stays readable over any footage
+  const s = wmCtx.createLinearGradient(0, 0, 0, H);
+  s.addColorStop(0, 'rgba(10,42,68,0.12)'); s.addColorStop(1, 'rgba(10,42,68,0.34)');
+  wmCtx.fillStyle = s; wmCtx.fillRect(0, 0, W, H);
+  // diagonal repeating watermark, burned into the pixels
   wmCtx.save();
   wmCtx.translate(W / 2, H / 2);
   wmCtx.rotate(-Math.PI / 7);
   wmCtx.font = '600 22px Hanken Grotesk, sans-serif';
-  wmCtx.fillStyle = 'rgba(255,255,255,0.42)';
   wmCtx.textAlign = 'center';
   const text = `${handle}  ·  SPOTME`;
-  for (let ry = -H; ry < H; ry += 58) {
-    for (let rx = -W; rx < W; rx += 340) {
+  for (let ry = -H; ry < H; ry += 56) {
+    for (let rx = -W; rx < W; rx += 330) {
+      wmCtx.fillStyle = 'rgba(0,0,0,0.22)';
+      wmCtx.fillText(text, rx + 1.5, ry + 1.5);
+      wmCtx.fillStyle = 'rgba(255,255,255,0.5)';
       wmCtx.fillText(text, rx, ry);
     }
   }
@@ -336,6 +365,9 @@ const sb = supabase.createClient(
 let authTab = 'signup';
 let currentUser = null;
 document.getElementById('upDate').value = new Date().toISOString().slice(0, 10);
+
+function toggleChip(btn) { btn.classList.toggle('on'); }
+function getSelectedSpots() { return [...document.querySelectorAll('#pSpots .chip.on')].map(c => c.textContent.trim()); }
 
 function setAuthTab(tab) {
   authTab = tab;
@@ -367,7 +399,7 @@ async function doAuth() {
       localStorage.setItem('pendingProfile', JSON.stringify({
         name,
         instagram: document.getElementById('pInsta').value.trim(),
-        home_spot: document.getElementById('pSpot').value
+        home_spot: getSelectedSpots().join(', ')
       }));
       const { data, error } = await sb.auth.signUp({ email, password });
       if (error) { authMsg(error.message, 'err'); return; }
