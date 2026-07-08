@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SpotMe — Find your surf footage</title>
-<meta name="description" content="Drones film every session in Lombok. Upload one photo, tell us when and where you surfed — our AI finds your waves in every pilot's footage.">
+<title>SpotMe — Find & buy your surf video</title>
+<meta name="description" content="Drones film every session in Lombok. Upload one photo, tell us when and where you surfed — our AI finds your surf videos across every pilot's footage, ready to buy.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -444,7 +444,7 @@ select option { color: var(--navy); background: var(--white); }
 .clip-match.hot { background: var(--blue); color: var(--white); }
 .clip-dur {
   position: absolute;
-  top: 8px; right: 8px;
+  bottom: 8px; right: 8px;
   background: rgba(10,42,68,0.72);
   color: var(--white);
   font-size: 10.5px;
@@ -452,6 +452,23 @@ select option { color: var(--navy); background: var(--white); }
   padding: 3px 8px;
   border-radius: 100px;
 }
+.clip-check {
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--sky);
+  color: var(--navy);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  box-shadow: 0 2px 10px rgba(10,42,68,0.45);
+  z-index: 2;
+}
+.clip.selected { outline: 3px solid var(--sky); outline-offset: 2px; }
+.clip.selected .clip-check { display: flex; }
 .clip-play {
   position: absolute;
   inset: 0;
@@ -478,22 +495,34 @@ select option { color: var(--navy); background: var(--white); }
 .clip-pilot { font-size: 12px; color: #6D93AB; margin-bottom: 12px; }
 .clip-pilot .star { color: #E9A93D; }
 .clip-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.clip-price { font-weight: 700; font-size: 15px; }
-.clip-price small { display: block; font-weight: 400; font-size: 10.5px; color: #6D93AB; }
+.clip-note { font-size: 11px; color: #6D93AB; }
 .clip-add {
   font-family: var(--font-body);
   font-size: 12.5px;
   font-weight: 700;
-  padding: 9px 16px;
-  border: none;
+  padding: 9px 18px;
+  border: 1.5px solid var(--blue);
   border-radius: 100px;
-  background: var(--blue);
-  color: var(--white);
+  background: transparent;
+  color: var(--blue);
   cursor: pointer;
-  transition: background 0.15s, transform 0.12s;
+  transition: background 0.15s, color 0.15s, transform 0.12s;
 }
-.clip-add:hover { background: var(--ocean); transform: translateY(-1px); }
-.clip-add.added { background: #199A6B; }
+.clip-add:hover { background: rgba(27,127,184,0.1); transform: translateY(-1px); }
+.clip-add.added { background: var(--sky); border-color: var(--sky); color: var(--navy); }
+/* bundle price banner */
+.bundle-note {
+  display: inline-block;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ocean);
+  background: #DDF0FB;
+  border: 1px solid #BCDFF2;
+  border-radius: 100px;
+  padding: 7px 16px;
+  margin-bottom: 28px;
+}
+.bundle-note b { color: var(--blue); }
 .clip-report { display: block; margin-top: 11px; background: none; border: none; padding: 0; font-family: var(--font-body); font-size: 11.5px; color: #6D93AB; cursor: pointer; text-decoration: underline; }
 .clip-report:hover { color: var(--blue); }
 /* takedown modal bits (light modal reuses .modal-veil/.modal) */
@@ -701,10 +730,10 @@ footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.14); 
   <div class="hero-grid">
     <!-- LEFT -->
     <div class="hero-left">
-      <div class="subtitle">Drone footage marketplace · Lombok</div>
+      <div class="subtitle">Drone surf videos · Lombok</div>
       <h1>Find &amp; buy your<br>surf video in <em>20 seconds</em></h1>
       <p class="hero-desc">Every wave in Lombok is filmed from above — you just never know which pilot got you.</p>
-      <p class="hero-desc">Upload one photo. Our AI finds your waves across every drone's footage, ready to buy.</p>
+      <p class="hero-desc">Upload one photo. Our AI finds every wave a drone caught of you — ready to buy.</p>
 
       <div class="how" id="how">
         <div class="how-title">How it works</div>
@@ -771,7 +800,7 @@ footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.14); 
       </div>
       <div class="ai-note">Colors are <b>detected automatically</b> from your photo.</div>
 
-      <button class="find-btn" onclick="runMatch()">Find my footage</button>
+      <button class="find-btn" onclick="runMatch()">Find &amp; buy my video</button>
     </div>
   </div>
   <div class="credit">📍 Kuta · Lombok</div>
@@ -785,10 +814,11 @@ footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.14); 
     </div>
     <div class="results" id="results">
       <div class="results-meta">
-        <h3>We found <em id="matchCount">6 clips</em> of you</h3>
+        <h3>We found <em id="matchCount">6 videos</em> of you</h3>
         <span class="mono-note" id="resultsNote"></span>
       </div>
       <div class="preview-notice">🔒 Previews are watermarked 720p — buying unlocks clean 4K, licensed from the pilot</div>
+      <div class="bundle-note">Select the ones you want · <b>1 video Rp 200K</b> · 2 for Rp 300K · then +Rp 50K each</div>
       <div class="clip-grid" id="clipGrid"></div>
     </div>
   </div>
@@ -855,7 +885,7 @@ footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.14); 
 <!-- TAKEDOWN / CONSENT MODAL -->
 <div class="modal-veil" id="tdVeil" onclick="if(event.target===this) closeTakedown()">
   <div class="modal">
-    <div class="modal-head">Your footage, your call <button class="modal-close" onclick="closeTakedown()">✕</button></div>
+    <div class="modal-head">Your video, your call <button class="modal-close" onclick="closeTakedown()">✕</button></div>
     <div class="modal-body" id="tdBody"></div>
   </div>
 </div>
@@ -996,7 +1026,7 @@ function runMatch() {
     [`<span class="t">00:06</span> <span class="hl">Match</span> — ${spot} 07:09, confidence 96%`, 4200],
     [`<span class="t">00:07</span> <span class="hl">Match</span> — ${spot} 07:26, confidence 93%`, 4800],
     [`<span class="t">00:08</span> <span class="hl">4 more matches</span> — watermarking previews…`, 5400],
-    [`<span class="t">00:09</span> <span class="ok">Done — 6 clips of you, 2:40 total footage</span>`, 6100],
+    [`<span class="t">00:09</span> <span class="ok">Done — 6 videos of you, 2:40 total</span>`, 6100],
   ];
 
   lines.forEach(([html, delay]) => {
@@ -1044,10 +1074,11 @@ function renderResults(spot, from) {
       : `${thumbSVG(pal, i)}<div class="wm"></div>`;
     const playAttr = i === 0 ? `onclick="openLightbox()" style="cursor:pointer"` : `title="watermarked preview (demo)"`;
     return `
-    <article class="clip" style="animation-delay:${i * 0.08}s">
+    <article class="clip" data-i="${i}" style="animation-delay:${i * 0.08}s">
       <div class="clip-thumb">
         ${media}
         <span class="clip-match ${c.match >= 90 ? 'hot' : ''}">${c.match}% you</span>
+        <span class="clip-check">✓</span>
         <span class="clip-dur">${c.dur}</span>
         <span class="wm-tag">© ${pilot.name} · preview</span>
         <div class="clip-play" ${playAttr}><span class="tri">▶</span></div>
@@ -1056,13 +1087,14 @@ function renderResults(spot, from) {
         <div class="clip-title">${c.title}</div>
         <div class="clip-pilot">${hh}:${mm} · ${pilot.name} · <span class="star">★</span> ${pilot.rating}</div>
         <div class="clip-foot">
-          <div class="clip-price">Rp ${(c.price/1000).toFixed(0)}K<small>clean 4K · no watermark</small></div>
-          <button class="clip-add" onclick="toggleCart(${i}, this)">Add</button>
+          <div class="clip-note">clean 4K · no watermark</div>
+          <button class="clip-add" onclick="toggleCart(${i})">＋ Select</button>
         </div>
         <button class="clip-report" onclick="openTakedown(${JSON.stringify(c.title)})">⚑ That's me — remove / report</button>
       </div>
     </article>`;
   }).join('');
+  syncSelection();
 
   document.getElementById('results').classList.add('show');
 }
@@ -1081,6 +1113,7 @@ function closeLightbox() {
 }
 function buyFromLightbox() {
   cart.add(0);
+  syncSelection();
   updateCartBar();
   closeLightbox();
   openCheckout();
@@ -1112,17 +1145,28 @@ function thumbSVG(pal, seed) {
 /* ============ CART + CHECKOUT ============ */
 const cart = new Set();
 
-function toggleCart(i, btn) {
-  if (cart.has(i)) {
-    cart.delete(i);
-    btn.classList.remove('added');
-    btn.textContent = 'Add';
-  } else {
-    cart.add(i);
-    btn.classList.add('added');
-    btn.textContent = '✓ Added';
-  }
+// count-based bundle pricing: 1 video 200k, 2 for 300k, then +50k each
+function bundlePrice(n) {
+  if (n <= 0) return 0;
+  if (n === 1) return 200000;
+  return 300000 + 50000 * (n - 2);
+}
+
+function toggleCart(i) {
+  if (cart.has(i)) cart.delete(i); else cart.add(i);
+  syncSelection();
   updateCartBar();
+}
+
+// reflect the cart in every visible card (outline + checkmark + button)
+function syncSelection() {
+  document.querySelectorAll('.clip[data-i]').forEach(el => {
+    const i = Number(el.dataset.i);
+    const on = cart.has(i);
+    el.classList.toggle('selected', on);
+    const btn = el.querySelector('.clip-add');
+    if (btn) { btn.classList.toggle('added', on); btn.textContent = on ? '✓ Selected' : '＋ Select'; }
+  });
 }
 
 function fmtRp(n) { return 'Rp ' + n.toLocaleString('id-ID'); }
@@ -1130,23 +1174,24 @@ function fmtRp(n) { return 'Rp ' + n.toLocaleString('id-ID'); }
 function updateCartBar() {
   const bar = document.getElementById('cartBar');
   if (cart.size === 0) { bar.classList.remove('show'); return; }
-  const total = [...cart].reduce((s, i) => s + CLIP_TEMPLATES[i].price, 0);
-  document.getElementById('cartSummary').textContent = `${cart.size} clip${cart.size > 1 ? 's' : ''} · ${fmtRp(total)}`;
+  document.getElementById('cartSummary').textContent =
+    `${cart.size} video${cart.size > 1 ? 's' : ''} · ${fmtRp(bundlePrice(cart.size))}`;
   bar.classList.add('show');
 }
 
 function openCheckout() {
   const items = [...cart];
-  const total = items.reduce((s, i) => s + CLIP_TEMPLATES[i].price, 0);
+  const total = bundlePrice(items.length);
   const fee = Math.round(total * 0.20);
   const pilotCut = total - fee;
   document.getElementById('modalBody').innerHTML = `
-    ${items.map(i => `<div class="receipt-row"><span>${CLIP_TEMPLATES[i].title} <span class="muted">· ${CLIP_TEMPLATES[i].dur} · 4K</span></span><span>${fmtRp(CLIP_TEMPLATES[i].price)}</span></div>`).join('')}
-    <div class="split-viz"><div class="pilot-cut">Pilot 80%</div><div class="ombak-cut">20%</div></div>
+    ${items.map(i => `<div class="receipt-row"><span>${CLIP_TEMPLATES[i].title} <span class="muted">· ${CLIP_TEMPLATES[i].dur} · 4K</span></span><span style="color:var(--blue)">✓</span></div>`).join('')}
+    <div class="receipt-row"><span class="muted">${items.length} video${items.length > 1 ? 's' : ''} bundle</span><span>${fmtRp(total)}</span></div>
+    <div class="split-viz"><div class="pilot-cut">Pilots 80%</div><div class="ombak-cut">20%</div></div>
     <div class="split-note">Pilots receive ${fmtRp(pilotCut)} · SpotMe platform fee ${fmtRp(fee)}</div>
     <div class="receipt-row total"><span>Total</span><span>${fmtRp(total)}</span></div>
-    <div class="license-note"><b>You get:</b> clean 4K original + vertical social crop, no watermark, personal-use license. <b>© stays with the pilot.</b></div>
-    <button class="find-btn" onclick="pay()">Pay with QRIS / GoPay / card</button>
+    <div class="license-note"><b>You get:</b> clean 4K originals + vertical social crops, no watermark, personal-use license. <b>© stays with the pilot.</b></div>
+    <button class="find-btn" onclick="pay()">Pay ${fmtRp(total)} with QRIS / GoPay / card</button>
     <p style="font-size:11px; color:#6D93AB; margin-top:12px; text-align:center;">Instant download after payment · demo — no real charge</p>
   `;
   document.getElementById('modalVeil').classList.add('show');
@@ -1156,13 +1201,13 @@ function pay() {
   document.getElementById('modalBody').innerHTML = `
     <div class="paid-stamp">
       <span class="stamp">Waves secured</span>
-      <p>Your clean 4K clips are rendering — originals + a<br>ready-to-post reel hit your inbox in ~2 minutes.<br><br>🤙 See you in the lineup.</p>
+      <p>Your clean 4K videos are rendering — originals + a<br>ready-to-post reel hit your inbox in ~2 minutes.<br><br>🤙 See you in the lineup.</p>
     </div>
     <button class="find-btn" onclick="closeModal()">Done</button>
   `;
   cart.clear();
   updateCartBar();
-  document.querySelectorAll('.clip-add.added').forEach(b => { b.classList.remove('added'); b.textContent = 'Add'; });
+  syncSelection();
 }
 
 function closeModal() { document.getElementById('modalVeil').classList.remove('show'); }
@@ -1177,10 +1222,10 @@ let tdClipRef = null;
 function openTakedown(clipRef) {
   tdClipRef = clipRef || 'unknown';
   document.getElementById('tdBody').innerHTML = `
-    <p style="font-size:13.5px; color:var(--ocean); margin-bottom:16px;">Footage of you should be yours to control. Tell us and we'll <b>hide this clip straight away</b> and review within 24 hours — no account needed.</p>
+    <p style="font-size:13.5px; color:var(--ocean); margin-bottom:16px;">Videos of you should be yours to control. Tell us and we'll <b>hide this clip straight away</b> and review within 24 hours — no account needed.</p>
     <div class="td-choices">
       <label class="td-choice"><input type="radio" name="tdkind" value="remove_me" checked> 🙋 This is me — take it down</label>
-      <label class="td-choice"><input type="radio" name="tdkind" value="report"> ⚑ Report this footage</label>
+      <label class="td-choice"><input type="radio" name="tdkind" value="report"> ⚑ Report this video</label>
     </div>
     <label class="f-label-dark">Contact (optional)</label>
     <input id="tdContact" type="text" placeholder="email or @instagram — so we can confirm">
