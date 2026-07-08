@@ -493,6 +493,17 @@ select option { color: var(--navy); background: var(--white); }
 }
 .clip-add:hover { background: var(--ocean); transform: translateY(-1px); }
 .clip-add.added { background: #199A6B; }
+.clip-report { display: block; margin-top: 11px; background: none; border: none; padding: 0; font-family: var(--font-body); font-size: 11.5px; color: #6D93AB; cursor: pointer; text-decoration: underline; }
+.clip-report:hover { color: var(--blue); }
+/* takedown modal bits (light modal reuses .modal-veil/.modal) */
+#tdBody input[type=text] { width: 100%; font-family: var(--font-body); font-size: 14px; padding: 11px 13px; border: 1.5px solid #C9E0EF; border-radius: 11px; background: #fff; color: var(--navy); }
+#tdBody .f-label-dark { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #6D93AB; margin: 16px 0 6px; }
+.td-choices { display: flex; flex-direction: column; gap: 8px; }
+.td-choice { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--navy); padding: 11px 13px; border: 1.5px solid #C9E0EF; border-radius: 11px; cursor: pointer; }
+.td-choice input { accent-color: var(--blue); }
+.msg-td { display: none; font-size: 13px; border-radius: 11px; padding: 11px 14px; margin-top: 12px; }
+.msg-td.ok { display: block; background: #DDF3E7; border: 1px solid #A9E0C2; color: #1B7A4E; }
+.msg-td.err { display: block; background: #FBE0DA; border: 1px solid #F0B6A8; color: #B23A22; }
 
 /* cart bar */
 .cart-bar {
@@ -840,6 +851,15 @@ footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.14); 
   </div>
 </div>
 
+<!-- TAKEDOWN / CONSENT MODAL -->
+<div class="modal-veil" id="tdVeil" onclick="if(event.target===this) closeTakedown()">
+  <div class="modal">
+    <div class="modal-head">Your footage, your call <button class="modal-close" onclick="closeTakedown()">✕</button></div>
+    <div class="modal-body" id="tdBody"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 /* ============ DATA ============ */
 const SPOT_NAMES = {
@@ -1038,6 +1058,7 @@ function renderResults(spot, from) {
           <div class="clip-price">Rp ${(c.price/1000).toFixed(0)}K<small>clean 4K · no watermark</small></div>
           <button class="clip-add" onclick="toggleCart(${i}, this)">Add</button>
         </div>
+        <button class="clip-report" onclick="openTakedown(${JSON.stringify(c.title)})">⚑ That's me — remove / report</button>
       </div>
     </article>`;
   }).join('');
@@ -1144,6 +1165,49 @@ function pay() {
 }
 
 function closeModal() { document.getElementById('modalVeil').classList.remove('show'); }
+
+/* ============ TAKEDOWN / CONSENT ============ */
+const sbTD = supabase.createClient(
+  'https://wmevypdzmaolcxzzshjp.supabase.co',
+  'sb_publishable_VJ6vNMZebKBR_kyDjo0VpQ_VgHCxNDB'
+);
+let tdClipRef = null;
+
+function openTakedown(clipRef) {
+  tdClipRef = clipRef || 'unknown';
+  document.getElementById('tdBody').innerHTML = `
+    <p style="font-size:13.5px; color:var(--ocean); margin-bottom:16px;">Footage of you should be yours to control. Tell us and we'll <b>hide this clip straight away</b> and review within 24 hours — no account needed.</p>
+    <div class="td-choices">
+      <label class="td-choice"><input type="radio" name="tdkind" value="remove_me" checked> 🙋 This is me — take it down</label>
+      <label class="td-choice"><input type="radio" name="tdkind" value="report"> ⚑ Report this footage</label>
+    </div>
+    <label class="f-label-dark">Contact (optional)</label>
+    <input id="tdContact" type="text" placeholder="email or @instagram — so we can confirm">
+    <label class="f-label-dark">Anything else? (optional)</label>
+    <input id="tdNote" type="text" placeholder="e.g. please remove all clips of me">
+    <button class="find-btn" style="background:var(--blue); color:#fff;" onclick="submitTakedown()">Lock this clip →</button>
+    <div class="msg-td" id="tdMsg"></div>`;
+  document.getElementById('tdVeil').classList.add('show');
+}
+
+async function submitTakedown() {
+  const kind = document.querySelector('input[name=tdkind]:checked').value;
+  const contact = document.getElementById('tdContact').value.trim();
+  const note = document.getElementById('tdNote').value.trim();
+  const msg = document.getElementById('tdMsg');
+  const { error } = await sbTD.from('takedowns').insert({
+    clip_ref: tdClipRef, kind, contact: contact || null, note: note || null
+  });
+  if (error) { msg.className = 'msg-td err'; msg.textContent = error.message; return; }
+  document.getElementById('tdBody').innerHTML = `
+    <div style="text-align:center; padding:22px 8px 4px;">
+      <div style="font-family:var(--font-serif); font-style:italic; font-size:28px; color:#1B7A4E;">Locked ✓</div>
+      <p style="font-size:13.5px; color:#547891; margin-top:14px;">This clip is now hidden and flagged for removal. We review every request within 24 hours.<br><br>Thanks for helping keep SpotMe safe. 🤍</p>
+    </div>
+    <button class="find-btn" style="background:var(--blue); color:#fff;" onclick="closeTakedown()">Done</button>`;
+}
+
+function closeTakedown() { document.getElementById('tdVeil').classList.remove('show'); }
 
 </script>
 </body>

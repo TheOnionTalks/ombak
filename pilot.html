@@ -185,6 +185,9 @@ input[type="file"]::file-selector-button {
 .clip-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 14px; align-items: center; padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.12); font-size: 13.5px; }
 .clip-row:last-child { border-bottom: none; }
 .clip-row .c-meta { color: rgba(255,255,255,0.6); font-size: 12px; }
+.c-exp { color: #9FE0B8; font-weight: 600; }
+.c-exp.soon { color: #FFC97A; }
+.c-exp.sold { color: var(--sky); }
 .clip-row a { color: var(--sky); font-weight: 600; text-decoration: none; }
 .clip-row .c-del { background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 15px; }
 .clip-row .c-del:hover { color: #FF9C87; }
@@ -289,6 +292,7 @@ input[type="file"]::file-selector-button {
 
       <div class="info-box" id="sizeNote">
         <b>On file size:</b> during beta each file is capped at 50&nbsp;MB, so upload a <b>compressed clip</b> (720p/1080p) — not your raw 4K. No compression tool on your laptop? <b>Bring me your SD card</b> and I'll handle it. The full "drop your raw 4K, we compress + watermark it for you" pipeline is what we're building next.
+        <br><br><b>Unsold clips auto-delete after 14 days</b> — keeps storage light, and means nobody's footage sits around longer than it needs to.
       </div>
 
       <button class="pill-btn" id="uploadBtn" onclick="doUpload()">Upload to SpotMe</button>
@@ -495,16 +499,24 @@ async function loadClips() {
   document.getElementById('clipCount').textContent = clips.length
     ? `${clips.length} clip${clips.length > 1 ? 's' : ''} on the marketplace`
     : 'No clips yet — upload your first session.';
-  box.innerHTML = clips.map(c => `
+  box.innerHTML = clips.map(c => {
+    let expiry = '';
+    if (c.sold) {
+      expiry = '<span class="c-exp sold">sold — kept</span>';
+    } else if (c.expires_at) {
+      const days = Math.ceil((new Date(c.expires_at) - Date.now()) / 86400000);
+      expiry = `<span class="c-exp${days <= 3 ? ' soon' : ''}">expires in ${days}d</span>`;
+    }
+    return `
     <div class="clip-row">
       <div>
         <div>${c.file_name || c.file_path.split('/').pop()}</div>
-        <div class="c-meta">${c.spot} · ${c.session_date} · ${c.size_mb ?? '?'}MB</div>
+        <div class="c-meta">${c.spot} · ${c.session_date} · ${c.size_mb ?? '?'}MB · ${expiry}</div>
       </div>
       <a href="#" onclick="viewClip('${c.file_path}'); return false;">view</a>
-      <span class="c-meta">${c.status}</span>
       <button class="c-del" title="delete" onclick="deleteClip('${c.id}', '${c.file_path}')">✕</button>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 async function viewClip(path) {
