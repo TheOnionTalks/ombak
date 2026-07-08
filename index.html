@@ -548,8 +548,8 @@ select option { color: var(--navy); background: var(--white); }
 .receipt-row.total { border-bottom: none; border-top: 2px solid var(--navy); margin-top: 8px; padding-top: 14px; font-weight: 700; font-size: 15.5px; color: var(--navy); }
 .receipt-row .muted { color: #6D93AB; }
 .split-viz { display: flex; height: 26px; border-radius: 100px; overflow: hidden; margin: 18px 0 6px; }
-.split-viz .pilot-cut { background: var(--blue); flex: 9; display: grid; place-items: center; color: var(--white); font-size: 10.5px; font-weight: 700; }
-.split-viz .ombak-cut { background: var(--navy); flex: 1; min-width: 46px; display: grid; place-items: center; color: var(--white); font-size: 10.5px; font-weight: 700; }
+.split-viz .pilot-cut { background: var(--blue); flex: 8; display: grid; place-items: center; color: var(--white); font-size: 10.5px; font-weight: 700; }
+.split-viz .ombak-cut { background: var(--navy); flex: 2; min-width: 46px; display: grid; place-items: center; color: var(--white); font-size: 10.5px; font-weight: 700; }
 .split-note { font-size: 11px; color: #6D93AB; margin-bottom: 6px; }
 .license-note {
   font-size: 11.5px;
@@ -675,7 +675,7 @@ footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.14); 
         <div class="how-title">How it works</div>
         <div class="how-step"><span class="n">1</span><div><b>Upload one photo</b> — AI reads your board & outfit colors</div></div>
         <div class="how-step"><span class="n">2</span><div><b>Preview your waves</b> — watermarked clips, confirm it's you</div></div>
-        <div class="how-step"><span class="n">3</span><div><b>Unlock clean 4K</b> — pilot keeps 90% of every sale</div></div>
+        <div class="how-step"><span class="n">3</span><div><b>Unlock clean 4K</b> — pilot keeps 80% of every sale</div></div>
       </div>
     </div>
 
@@ -773,7 +773,7 @@ footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.14); 
       <a class="beta-cta" href="https://wa.me/?text=Hi!%20I%20fly%20drones%20at%20a%20surf%20spot%20in%20Lombok%20and%20I%20want%20to%20join%20the%20OMBAK%20beta." target="_blank" rel="noopener">Join the beta — it's free →</a>
     </div>
     <div class="p-points">
-      <div class="p-point"><span class="ic">💸</span><div><b>Keep <em>90%</em> of every sale</b><span>Paid out weekly via GoPay, QRIS or bank transfer.</span></div></div>
+      <div class="p-point"><span class="ic">💸</span><div><b>Keep <em>80%</em> of every sale</b><span>Paid out weekly via GoPay, QRIS or bank transfer.</span></div></div>
       <div class="p-point"><span class="ic">🔒</span><div><b>Your footage stays yours</b><span>Every preview is watermarked with your name. © never leaves you — surfers buy a personal-use license.</span></div></div>
       <div class="p-point"><span class="ic">☁️</span><div><b>Light uploads, zero scrubbing</b><span>A compressed proxy uploads for matching. Your 4K original transfers only when a clip sells.</span></div></div>
       <div class="p-point"><span class="ic">🛸</span><div><b>Upload once, done</b><span>Drop your SD card dump, tag the spot. The AI does the rest — no DMs, no searching for strangers.</span></div></div>
@@ -1044,11 +1044,11 @@ function updateCartBar() {
 function openCheckout() {
   const items = [...cart];
   const total = items.reduce((s, i) => s + CLIP_TEMPLATES[i].price, 0);
-  const fee = Math.round(total * 0.10);
+  const fee = Math.round(total * 0.20);
   const pilotCut = total - fee;
   document.getElementById('modalBody').innerHTML = `
     ${items.map(i => `<div class="receipt-row"><span>${CLIP_TEMPLATES[i].title} <span class="muted">· ${CLIP_TEMPLATES[i].dur} · 4K</span></span><span>${fmtRp(CLIP_TEMPLATES[i].price)}</span></div>`).join('')}
-    <div class="split-viz"><div class="pilot-cut">Pilot 90%</div><div class="ombak-cut">10%</div></div>
+    <div class="split-viz"><div class="pilot-cut">Pilot 80%</div><div class="ombak-cut">20%</div></div>
     <div class="split-note">Pilots receive ${fmtRp(pilotCut)} · OMBAK platform fee ${fmtRp(fee)}</div>
     <div class="receipt-row total"><span>Total</span><span>${fmtRp(total)}</span></div>
     <div class="license-note"><b>You get:</b> clean 4K original + vertical social crop, no watermark, personal-use license. <b>© stays with the pilot.</b></div>
