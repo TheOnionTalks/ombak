@@ -383,6 +383,22 @@ select option { color: var(--navy); background: var(--white); }
 
 .clip-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
 .clip-video { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: #0E4D73; }
+
+/* video lightbox */
+.vlb-veil { display: none; position: fixed; inset: 0; z-index: 320; background: rgba(10,42,68,0.78); backdrop-filter: blur(6px); align-items: center; justify-content: center; padding: 24px; }
+.vlb-veil.show { display: flex; }
+.vlb { position: relative; width: min(980px, 94vw); background: var(--navy); border-radius: 18px; overflow: hidden; box-shadow: 0 30px 90px rgba(0,0,0,0.55); animation: rise 0.3s ease both; }
+.vlb video { display: block; width: 100%; max-height: 72vh; background: #000; }
+.vlb-bar { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; padding: 15px 18px; color: var(--white); }
+.vlb-bar .vlb-title { font-weight: 600; font-size: 16px; }
+.vlb-bar .vlb-sub { font-size: 12.5px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+.vlb-actions { display: flex; gap: 14px; align-items: center; }
+.vlb-price { font-family: var(--font-body); font-weight: 700; font-size: 15px; text-align: right; }
+.vlb-price small { display: block; font-weight: 400; font-size: 10.5px; color: rgba(255,255,255,0.6); }
+.vlb-buy { font-family: var(--font-body); font-size: 13.5px; font-weight: 700; padding: 12px 22px; border: none; border-radius: 100px; background: var(--sky); color: var(--navy); cursor: pointer; transition: background 0.15s; }
+.vlb-buy:hover { background: #7ECAEC; }
+.vlb-close { position: absolute; top: 14px; right: 16px; z-index: 3; background: rgba(0,0,0,0.55); color: #fff; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 17px; cursor: pointer; }
+.vlb-close:hover { background: rgba(0,0,0,0.8); }
 .clip {
   background: var(--white);
   border: 1px solid #D8E9F4;
@@ -792,6 +808,24 @@ footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.14); 
   </div>
 </footer>
 
+<!-- VIDEO LIGHTBOX -->
+<div class="vlb-veil" id="vlbVeil" onclick="if(event.target===this) closeLightbox()">
+  <div class="vlb">
+    <button class="vlb-close" onclick="closeLightbox()">✕</button>
+    <video id="vlbVideo" src="demo-clip.mp4" controls playsinline preload="metadata"></video>
+    <div class="vlb-bar">
+      <div>
+        <div class="vlb-title">Gerupuk — your wave · <span style="color:var(--sky)">96% you</span></div>
+        <div class="vlb-sub">© gerupuk drone pilot · watermarked preview · buying unlocks clean 4K</div>
+      </div>
+      <div class="vlb-actions">
+        <div class="vlb-price">Rp 150K<small>clean 4K · no watermark</small></div>
+        <button class="vlb-buy" onclick="buyFromLightbox()">Add &amp; checkout →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- CART BAR -->
 <div class="cart-bar" id="cartBar">
   <span id="cartSummary"></span>
@@ -987,7 +1021,7 @@ function renderResults(spot, from) {
     const media = i === 0
       ? `<video class="clip-video" src="demo-clip.mp4" muted loop playsinline preload="metadata"></video>`
       : `${thumbSVG(pal, i)}<div class="wm"></div>`;
-    const playAttr = i === 0 ? `onclick="playDemo(this)"` : `title="watermarked preview (demo)"`;
+    const playAttr = i === 0 ? `onclick="openLightbox()" style="cursor:pointer"` : `title="watermarked preview (demo)"`;
     return `
     <article class="clip" style="animation-delay:${i * 0.08}s">
       <div class="clip-thumb">
@@ -1011,11 +1045,23 @@ function renderResults(spot, from) {
   document.getElementById('results').classList.add('show');
 }
 
-function playDemo(btn) {
-  const v = btn.parentElement.querySelector('video');
-  if (!v) return;
-  if (v.paused) { v.play(); btn.style.opacity = 0; }
-  else { v.pause(); btn.style.opacity = 1; }
+function openLightbox() {
+  const veil = document.getElementById('vlbVeil');
+  const v = document.getElementById('vlbVideo');
+  veil.classList.add('show');
+  v.currentTime = 0;
+  v.play().catch(() => {});
+}
+function closeLightbox() {
+  const v = document.getElementById('vlbVideo');
+  v.pause();
+  document.getElementById('vlbVeil').classList.remove('show');
+}
+function buyFromLightbox() {
+  cart.add(0);
+  updateCartBar();
+  closeLightbox();
+  openCheckout();
 }
 
 function thumbSVG(pal, seed) {
