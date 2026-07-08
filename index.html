@@ -523,8 +523,8 @@ select option { color: var(--navy); background: var(--white); }
   margin-bottom: 28px;
 }
 .bundle-note b { color: var(--blue); }
-.clip-report { display: block; margin-top: 11px; background: none; border: none; padding: 0; font-family: var(--font-body); font-size: 11.5px; color: #6D93AB; cursor: pointer; text-decoration: underline; }
-.clip-report:hover { color: var(--blue); }
+.results-report { display: block; margin: 26px auto 0; background: none; border: none; font-family: var(--font-body); font-size: 12.5px; color: #6D93AB; cursor: pointer; text-decoration: underline; }
+.results-report:hover { color: var(--blue); }
 /* takedown modal bits (light modal reuses .modal-veil/.modal) */
 #tdBody input[type=text] { width: 100%; font-family: var(--font-body); font-size: 14px; padding: 11px 13px; border: 1.5px solid #C9E0EF; border-radius: 11px; background: #fff; color: var(--navy); }
 #tdBody .f-label-dark { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #6D93AB; margin: 16px 0 6px; }
@@ -731,7 +731,7 @@ footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.14); 
     <!-- LEFT -->
     <div class="hero-left">
       <div class="subtitle">Drone surf videos · Lombok</div>
-      <h1>Find &amp; buy your<br>surf video in <em>20 seconds</em></h1>
+      <h1>Find 🔍 &amp; buy 💸<br>your surf videos<br>in 20 seconds</h1>
       <p class="hero-desc">Every wave in Lombok is filmed from above — you just never know which pilot got you.</p>
       <p class="hero-desc">Upload one photo. Our AI finds every wave a drone caught of you — ready to buy.</p>
 
@@ -820,6 +820,7 @@ footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.14); 
       <div class="preview-notice">🔒 Previews are watermarked 720p — buying unlocks clean 4K, licensed from the pilot</div>
       <div class="bundle-note">Select the ones you want · <b>1 video Rp 200K</b> · 2 for Rp 300K · then +Rp 50K each</div>
       <div class="clip-grid" id="clipGrid"></div>
+      <button class="results-report" onclick="openTakedown('a video in these results')">Not you, or want a video taken down? Report it →</button>
     </div>
   </div>
 </section>
@@ -1090,7 +1091,6 @@ function renderResults(spot, from) {
           <div class="clip-note">clean 4K · no watermark</div>
           <button class="clip-add" onclick="toggleCart(${i})">＋ Select</button>
         </div>
-        <button class="clip-report" onclick="openTakedown(${JSON.stringify(c.title)})">⚑ That's me — remove / report</button>
       </div>
     </article>`;
   }).join('');
