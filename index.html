@@ -892,6 +892,7 @@ footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.14); 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://app.lemonsqueezy.com/js/lemon.js" defer></script>
 <script>
 /* ============ DATA ============ */
 const SPOT_NAMES = {
@@ -1145,6 +1146,18 @@ function thumbSVG(pal, seed) {
 /* ============ CART + CHECKOUT ============ */
 const cart = new Set();
 
+// ── Lemon Squeezy: paste the "Buy link" URL for each bundle size (from your LS dashboard).
+//    Make a product/variant per tier (1 video, 2 videos, …) at the matching price, copy its
+//    Share → buy link here. Leave a slot blank to keep the demo success screen for that size.
+const LEMON_LINKS = { 1: '', 2: '', 3: '', 4: '', 5: '', 6: '' };
+
+function lemonUrlFor(n) {
+  const url = LEMON_LINKS[n] || LEMON_LINKS[Math.min(n, 6)] || '';
+  if (!url) return '';
+  const titles = [...cart].map(i => CLIP_TEMPLATES[i].title).join('; ');
+  return url + (url.includes('?') ? '&' : '?') + 'checkout[custom][videos]=' + encodeURIComponent(titles);
+}
+
 // count-based bundle pricing: 1 video 200k, 2 for 300k, then +50k each
 function bundlePrice(n) {
   if (n <= 0) return 0;
@@ -1198,6 +1211,15 @@ function openCheckout() {
 }
 
 function pay() {
+  // If a Lemon Squeezy buy link is configured for this bundle size, send them to real checkout
+  const url = lemonUrlFor(cart.size);
+  if (url) {
+    try { window.createLemonSqueezy && window.createLemonSqueezy(); } catch (e) {}
+    try { window.LemonSqueezy && window.LemonSqueezy.Url.Open(url); }
+    catch (e) { window.open(url, '_blank'); }
+    return;
+  }
+  // demo fallback (no real charge)
   document.getElementById('modalBody').innerHTML = `
     <div class="paid-stamp">
       <span class="stamp">Waves secured</span>
