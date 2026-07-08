@@ -1149,10 +1149,17 @@ const cart = new Set();
 // ── Lemon Squeezy: paste the "Buy link" URL for each bundle size (from your LS dashboard).
 //    Make a product/variant per tier (1 video, 2 videos, …) at the matching price, copy its
 //    Share → buy link here. Leave a slot blank to keep the demo success screen for that size.
-const LEMON_LINKS = { 1: '', 2: '', 3: '', 4: '', 5: '', 6: '' };
+const LS = 'https://spotme.lemonsqueezy.com/checkout/buy/';
+const LEMON_LINKS = {
+  1: LS + 'c3d171d1-369c-4b48-b801-f083c7fee118',
+  2: LS + 'da7407bc-118d-4318-8e57-139d953ee023',
+  3: LS + '0d93d4b4-a8fd-47a9-95a0-a83905176615',
+  4: LS + '2972ace2-18a9-442f-81d2-f79184d5a009',
+  5: LS + '4aa6b454-e40d-4de1-b3db-a841cacd448a'
+};
 
 function lemonUrlFor(n) {
-  const url = LEMON_LINKS[n] || LEMON_LINKS[Math.min(n, 6)] || '';
+  const url = LEMON_LINKS[n] || LEMON_LINKS[Math.min(n, 5)] || '';
   if (!url) return '';
   const titles = [...cart].map(i => CLIP_TEMPLATES[i].title).join('; ');
   return url + (url.includes('?') ? '&' : '?') + 'checkout[custom][videos]=' + encodeURIComponent(titles);
