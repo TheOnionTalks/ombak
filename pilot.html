@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpotMe — Pilot portal</title>
+<meta name="description" content="Drone pilots: upload your Lombok surf footage, keep 80% of every sale. Your name is watermarked on every preview — clean 4K only unlocks when a surfer pays.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0A2A44;
+  --ocean: #0E4D73;
+  --blue: #1B7FB8;
+  --sky: #58B7E3;
+  --ice: #EFF7FC;
+  --white: #FFFFFF;
+  --font-body: 'Hanken Grotesk', sans-serif;
+  --font-serif: 'Instrument Serif', serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  color: var(--white);
+  line-height: 1.6;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 900px 500px at 15% 0%, rgba(88,183,227,0.25), transparent 60%),
+    radial-gradient(ellipse 800px 600px at 100% 100%, rgba(30,127,184,0.3), transparent 55%),
+    linear-gradient(160deg, #0C3B5E 0%, #0A2A44 100%);
+  background-attachment: fixed;
+}
+::selection { background: var(--sky); color: var(--navy); }
+
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px clamp(20px, 5vw, 64px);
+  max-width: 1160px;
+  margin: 0 auto;
+}
+.logo { font-weight: 700; font-size: 20px; letter-spacing: 0.22em; color: var(--white); text-decoration: none; }
+.logo span { color: var(--sky); }
+.nav-back { font-size: 13.5px; font-weight: 600; color: rgba(255,255,255,0.9); text-decoration: none; }
+.nav-back:hover { color: var(--white); }
+
+.wrap { max-width: 1160px; margin: 0 auto; padding: 18px clamp(20px, 5vw, 64px) 80px; }
+
+.page-head { max-width: 640px; margin: 10px 0 34px; }
+.page-head .subtitle { font-size: 12.5px; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--sky); margin-bottom: 14px; }
+.page-head h1 { font-weight: 300; font-size: clamp(34px, 5vw, 52px); line-height: 1.08; letter-spacing: -0.015em; }
+.page-head h1 em { font-family: var(--font-serif); font-style: italic; color: #BFE5F7; }
+.page-head p { margin-top: 14px; font-size: 16px; color: rgba(255,255,255,0.82); max-width: 520px; }
+
+.card {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 20px;
+  padding: 28px 28px 26px;
+}
+.card h3 { font-weight: 600; font-size: 21px; margin-bottom: 4px; }
+.card .psub { font-size: 13.5px; color: rgba(255,255,255,0.7); margin-bottom: 20px; }
+
+/* ---- form hierarchy: label hugs its own field, clear gap above ---- */
+.f-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.8);
+  margin: 22px 0 6px;
+}
+.f-label:first-of-type { margin-top: 0; }
+.f-label .hint { font-weight: 400; text-transform: none; letter-spacing: 0.02em; color: rgba(255,255,255,0.55); }
+
+input[type="email"], input[type="password"], input[type="text"], input[type="date"], select {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 500;
+  padding: 12px 14px;
+  border: 1.5px solid rgba(255,255,255,0.4);
+  border-radius: 11px;
+  background: rgba(255,255,255,0.1);
+  color: var(--white);
+  color-scheme: dark;
+  appearance: none;
+}
+input:focus, select:focus { outline: 2px solid var(--sky); outline-offset: 1px; }
+input::placeholder { color: rgba(255,255,255,0.45); }
+select option { color: var(--navy); background: var(--white); }
+.select-wrap { position: relative; }
+.select-wrap::after {
+  content: '';
+  position: absolute;
+  right: 15px; top: 50%;
+  width: 7px; height: 7px;
+  border-right: 1.5px solid rgba(255,255,255,0.8);
+  border-bottom: 1.5px solid rgba(255,255,255,0.8);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 22px; }
+.grid-2 .f-label { margin-top: 0; }
+
+input[type="file"] { color: rgba(255,255,255,0.85); font-size: 13.5px; padding: 0; border: none; background: none; }
+input[type="file"]::file-selector-button {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--navy);
+  background: var(--white);
+  border: none;
+  border-radius: 100px;
+  padding: 10px 18px;
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+.auth-tabs { display: flex; border: 1.5px solid rgba(255,255,255,0.35); border-radius: 11px; overflow: hidden; margin-bottom: 22px; }
+.auth-tabs button { flex: 1; font-family: var(--font-body); font-size: 14px; font-weight: 600; padding: 11px; background: transparent; color: rgba(255,255,255,0.75); border: none; cursor: pointer; }
+.auth-tabs button + button { border-left: 1.5px solid rgba(255,255,255,0.35); }
+.auth-tabs button.active { background: var(--white); color: var(--navy); }
+
+.pill-btn {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px;
+  border: none;
+  border-radius: 100px;
+  background: var(--white);
+  color: var(--navy);
+  cursor: pointer;
+  transition: transform 0.15s;
+  margin-top: 22px;
+}
+.pill-btn:hover { transform: translateY(-2px); }
+.pill-btn:disabled { opacity: 0.5; cursor: wait; transform: none; }
+.link-btn { background: none; border: none; color: rgba(255,255,255,0.65); font-size: 12.5px; cursor: pointer; text-decoration: underline; }
+
+.msg { display: none; font-size: 13px; border-radius: 11px; padding: 11px 14px; margin-top: 16px; }
+.msg.err { display: block; background: rgba(255,99,71,0.18); border: 1px solid rgba(255,99,71,0.5); color: #FFC9BC; }
+.msg.ok { display: block; background: rgba(46,204,113,0.15); border: 1px solid rgba(46,204,113,0.5); color: #B6F0CE; }
+
+.info-box {
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.72);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 12px;
+  padding: 13px 15px;
+  margin-top: 16px;
+}
+.info-box b { color: var(--white); }
+
+.upload-row { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); border-radius: 12px; padding: 10px 14px; margin-top: 10px; font-size: 13px; }
+.upload-row .u-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.upload-row .u-status { font-weight: 600; font-size: 12px; }
+.upload-row .u-status.done { color: #7BE0A5; }
+.upload-row .u-status.err { color: #FF9C87; }
+.upload-row .u-status.up { color: var(--sky); }
+
+.clip-row { display: grid; grid-template-columns: 1fr auto auto auto; gap: 14px; align-items: center; padding: 12px 4px; border-bottom: 1px solid rgba(255,255,255,0.12); font-size: 13.5px; }
+.clip-row:last-child { border-bottom: none; }
+.clip-row .c-meta { color: rgba(255,255,255,0.6); font-size: 12px; }
+.clip-row a { color: var(--sky); font-weight: 600; text-decoration: none; }
+.clip-row .c-del { background: none; border: none; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 15px; }
+.clip-row .c-del:hover { color: #FF9C87; }
+.dash-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+
+/* ---- layout ---- */
+.auth-layout { display: grid; grid-template-columns: 460px 1fr; gap: 30px; align-items: start; }
+.dash-layout { display: grid; grid-template-columns: 1fr 1.15fr; gap: 26px; align-items: start; }
+@media (max-width: 900px) { .auth-layout, .dash-layout { grid-template-columns: 1fr; } }
+
+/* ---- watermark preview ---- */
+.wm-card h4 { font-weight: 600; font-size: 15px; margin-bottom: 6px; }
+.wm-card p { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 16px; }
+.wm-frame { border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.18); position: relative; aspect-ratio: 16/9; background: #0E4D73; }
+.wm-frame canvas { display: block; width: 100%; height: 100%; }
+.wm-legend { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.wm-chip { font-size: 11px; color: rgba(255,255,255,0.75); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); border-radius: 100px; padding: 5px 11px; }
+.wm-chip b { color: #BFE5F7; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="index.html">SPOTME<span>.</span></a>
+  <a class="nav-back" href="index.html">← I'm a surfer, find my footage</a>
+</nav>
+
+<div class="wrap">
+  <div class="page-head">
+    <div class="subtitle">Pilot portal</div>
+    <h1>Upload once. <em>Sell to everyone.</em></h1>
+    <p>Your footage stays yours — every preview surfers see is watermarked with your name. The clean 4K only leaves our servers when someone pays. You keep 80%.</p>
+  </div>
+
+  <!-- ===== LOGGED OUT: register / login ===== -->
+  <div class="auth-layout" id="authLayout">
+    <div class="card" id="authBox">
+      <div class="auth-tabs">
+        <button id="tabSignup" class="active" onclick="setAuthTab('signup')">Create account</button>
+        <button id="tabLogin" onclick="setAuthTab('login')">Log in</button>
+      </div>
+      <div id="signupFields">
+        <label class="f-label">Your name</label>
+        <input type="text" id="pName" placeholder="Agus" autocomplete="name">
+        <label class="f-label">Instagram / brand name <span class="hint">— goes on your watermark</span></label>
+        <input type="text" id="pInsta" placeholder="@aerial.agus" oninput="drawWM()">
+        <label class="f-label">Home spot</label>
+        <div class="select-wrap">
+          <select id="pSpot">
+            <option>Mawi</option><option>Gerupuk — Inside</option><option>Gerupuk — Outside</option><option>Tanjung Aan</option><option>Selong Belanak</option><option>Are Guling</option><option>Ekas</option><option>Desert Point</option>
+          </select>
+        </div>
+      </div>
+      <label class="f-label">Email</label>
+      <input type="email" id="pEmail" placeholder="you@email.com" autocomplete="email">
+      <label class="f-label">Password</label>
+      <input type="password" id="pPassword" placeholder="min. 6 characters" autocomplete="new-password">
+      <button class="pill-btn" id="authBtn" onclick="doAuth()">Create my pilot account</button>
+      <div class="msg" id="authMsg"></div>
+    </div>
+
+    <!-- watermark preview -->
+    <div class="card wm-card">
+      <h4>This is your watermark</h4>
+      <p>Every preview a surfer scrolls looks like this — your name, burned diagonally across the frame. Type your handle to see it change.</p>
+      <div class="wm-frame"><canvas id="wmCanvas" width="640" height="360"></canvas></div>
+      <div class="wm-legend">
+        <span class="wm-chip">🔒 720p · <b>watermarked</b></span>
+        <span class="wm-chip">💧 name repeated diagonally</span>
+        <span class="wm-chip">🎬 clean 4K unlocks <b>only on sale</b></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== LOGGED IN: dashboard ===== -->
+  <div class="dash-layout" id="pilotDash" style="display:none;">
+    <div class="card">
+      <div class="dash-head">
+        <h3 id="dashHello">Hey pilot 🤙</h3>
+        <button class="link-btn" onclick="doLogout()">Log out</button>
+      </div>
+      <div class="psub">Upload today's session — tag the spot and time so surfers match instantly.</div>
+
+      <label class="f-label">Session spot</label>
+      <div class="select-wrap">
+        <select id="upSpot">
+          <option>Mawi</option><option>Gerupuk — Inside</option><option>Gerupuk — Outside</option><option>Tanjung Aan</option><option>Selong Belanak</option><option>Are Guling</option><option>Ekas</option><option>Desert Point</option>
+        </select>
+      </div>
+
+      <label class="f-label">Session date</label>
+      <input type="date" id="upDate">
+
+      <label class="f-label">Video clips <span class="hint">— MP4 / MOV</span></label>
+      <input type="file" id="upFiles" accept="video/mp4,video/quicktime,video/webm,video/x-msvideo" multiple>
+      <div id="uploadQueue"></div>
+
+      <div class="info-box" id="sizeNote">
+        <b>On file size:</b> during beta each file is capped at 50&nbsp;MB, so upload a <b>compressed clip</b> (720p/1080p) — not your raw 4K. No compression tool on your laptop? <b>Bring me your SD card</b> and I'll handle it. The full "drop your raw 4K, we compress + watermark it for you" pipeline is what we're building next.
+      </div>
+
+      <button class="pill-btn" id="uploadBtn" onclick="doUpload()">Upload to SpotMe</button>
+      <div class="msg" id="upMsg"></div>
+    </div>
+
+    <div class="card">
+      <h3>My clips</h3>
+      <div class="psub" id="clipCount">—</div>
+      <div id="myClips"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+/* ============ WATERMARK PREVIEW ============ */
+const wmCanvas = document.getElementById('wmCanvas');
+const wmCtx = wmCanvas.getContext('2d');
+function drawWM() {
+  const W = wmCanvas.width, H = wmCanvas.height;
+  let handle = (document.getElementById('pInsta').value || '@yourname').trim();
+  if (!handle.startsWith('@')) handle = '@' + handle;
+  // "footage" backdrop
+  const g = wmCtx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, '#3AA0C9'); g.addColorStop(0.55, '#1B7FB8'); g.addColorStop(1, '#0C3B5E');
+  wmCtx.fillStyle = g; wmCtx.fillRect(0, 0, W, H);
+  // a couple of wave lines + a tiny surfer so it reads as footage
+  wmCtx.strokeStyle = 'rgba(255,255,255,0.35)'; wmCtx.lineWidth = 3;
+  for (let i = 0; i < 3; i++) {
+    wmCtx.beginPath();
+    const y = 150 + i * 60;
+    wmCtx.moveTo(0, y);
+    for (let x = 0; x <= W; x += 40) wmCtx.lineTo(x, y - Math.sin((x / 60) + i) * 10);
+    wmCtx.stroke();
+  }
+  wmCtx.fillStyle = 'rgba(10,42,68,0.9)';
+  wmCtx.beginPath(); wmCtx.arc(300, 175, 7, 0, 7); wmCtx.fill();
+  wmCtx.fillRect(280, 188, 46, 5);
+  // green detection box
+  wmCtx.strokeStyle = '#4BFF7E'; wmCtx.lineWidth = 2.5;
+  wmCtx.strokeRect(268, 150, 66, 58);
+  // diagonal repeating watermark
+  wmCtx.save();
+  wmCtx.translate(W / 2, H / 2);
+  wmCtx.rotate(-Math.PI / 7);
+  wmCtx.font = '600 22px Hanken Grotesk, sans-serif';
+  wmCtx.fillStyle = 'rgba(255,255,255,0.42)';
+  wmCtx.textAlign = 'center';
+  const text = `${handle}  ·  SPOTME`;
+  for (let ry = -H; ry < H; ry += 58) {
+    for (let rx = -W; rx < W; rx += 340) {
+      wmCtx.fillText(text, rx, ry);
+    }
+  }
+  wmCtx.restore();
+}
+drawWM();
+
+/* ============ PILOT PORTAL (Supabase) ============ */
+const sb = supabase.createClient(
+  'https://wmevypdzmaolcxzzshjp.supabase.co',
+  'sb_publishable_VJ6vNMZebKBR_kyDjo0VpQ_VgHCxNDB'
+);
+
+let authTab = 'signup';
+let currentUser = null;
+document.getElementById('upDate').value = new Date().toISOString().slice(0, 10);
+
+function setAuthTab(tab) {
+  authTab = tab;
+  document.getElementById('tabSignup').classList.toggle('active', tab === 'signup');
+  document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+  document.getElementById('signupFields').style.display = tab === 'signup' ? 'block' : 'none';
+  document.getElementById('authBtn').textContent = tab === 'signup' ? 'Create my pilot account' : 'Log in';
+  authMsg('', '');
+}
+function authMsg(text, kind) {
+  const el = document.getElementById('authMsg');
+  el.textContent = text; el.className = 'msg' + (kind ? ' ' + kind : '');
+}
+function upMsgShow(text, kind) {
+  const el = document.getElementById('upMsg');
+  el.textContent = text; el.className = 'msg' + (kind ? ' ' + kind : '');
+}
+
+async function doAuth() {
+  const email = document.getElementById('pEmail').value.trim();
+  const password = document.getElementById('pPassword').value;
+  if (!email || password.length < 6) { authMsg('Enter your email and a password of at least 6 characters.', 'err'); return; }
+  const btn = document.getElementById('authBtn');
+  btn.disabled = true;
+  try {
+    if (authTab === 'signup') {
+      const name = document.getElementById('pName').value.trim();
+      if (!name) { authMsg('Enter your name.', 'err'); return; }
+      localStorage.setItem('pendingProfile', JSON.stringify({
+        name,
+        instagram: document.getElementById('pInsta').value.trim(),
+        home_spot: document.getElementById('pSpot').value
+      }));
+      const { data, error } = await sb.auth.signUp({ email, password });
+      if (error) { authMsg(error.message, 'err'); return; }
+      if (!data.session) {
+        authMsg('Account created! Check your email for the confirmation link, then come back and log in.', 'ok');
+        setAuthTab('login');
+        return;
+      }
+    } else {
+      const { error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) { authMsg(error.message, 'err'); return; }
+    }
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function doLogout() { await sb.auth.signOut(); }
+
+async function ensureProfile(user) {
+  const { data: existing } = await sb.from('pilots').select('name').eq('id', user.id).maybeSingle();
+  if (existing) return existing;
+  const pending = JSON.parse(localStorage.getItem('pendingProfile') || 'null') || { name: user.email.split('@')[0] };
+  const row = { id: user.id, name: pending.name, instagram: pending.instagram || null, home_spot: pending.home_spot || null };
+  await sb.from('pilots').insert(row);
+  localStorage.removeItem('pendingProfile');
+  return row;
+}
+
+async function renderPortal(session) {
+  currentUser = session?.user || null;
+  document.getElementById('authLayout').style.display = currentUser ? 'none' : 'grid';
+  document.getElementById('pilotDash').style.display = currentUser ? 'grid' : 'none';
+  if (!currentUser) return;
+  const profile = await ensureProfile(currentUser);
+  document.getElementById('dashHello').textContent = `Hey ${profile.name} 🤙`;
+  loadClips();
+}
+
+async function doUpload() {
+  if (!currentUser) return;
+  const files = [...document.getElementById('upFiles').files];
+  if (!files.length) { upMsgShow('Choose at least one video file first.', 'err'); return; }
+  const spot = document.getElementById('upSpot').value;
+  const date = document.getElementById('upDate').value;
+  const queue = document.getElementById('uploadQueue');
+  queue.innerHTML = '';
+  upMsgShow('', '');
+  const btn = document.getElementById('uploadBtn');
+  btn.disabled = true;
+
+  const rows = files.map(f => {
+    const row = document.createElement('div');
+    row.className = 'upload-row';
+    row.innerHTML = `<span class="u-name">${f.name}</span><span class="u-status up">uploading…</span>`;
+    queue.appendChild(row);
+    return row.querySelector('.u-status');
+  });
+
+  let ok = 0;
+  for (let i = 0; i < files.length; i++) {
+    const f = files[i];
+    if (f.size > 50 * 1024 * 1024) {
+      rows[i].textContent = 'too big — compress to under 50MB (beta)';
+      rows[i].className = 'u-status err';
+      continue;
+    }
+    const safeName = f.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const path = `${currentUser.id}/${Date.now()}-${safeName}`;
+    const { error: upErr } = await sb.storage.from('clips').upload(path, f, { contentType: f.type || 'video/mp4' });
+    if (upErr) { rows[i].textContent = upErr.message; rows[i].className = 'u-status err'; continue; }
+    const { error: dbErr } = await sb.from('clips').insert({
+      pilot_id: currentUser.id, spot, session_date: date,
+      file_path: path, file_name: f.name, size_mb: Math.round(f.size / 1048576 * 10) / 10
+    });
+    if (dbErr) { rows[i].textContent = dbErr.message; rows[i].className = 'u-status err'; continue; }
+    rows[i].textContent = 'live ✓';
+    rows[i].className = 'u-status done';
+    ok++;
+  }
+  btn.disabled = false;
+  if (ok) {
+    upMsgShow(`${ok} clip${ok > 1 ? 's' : ''} live. Surfers searching ${spot} on ${date} can now match with them.`, 'ok');
+    document.getElementById('upFiles').value = '';
+    loadClips();
+  }
+}
+
+async function loadClips() {
+  const { data: clips, error } = await sb.from('clips').select('*').order('created_at', { ascending: false });
+  const box = document.getElementById('myClips');
+  if (error) { box.innerHTML = `<div class="msg err" style="display:block">${error.message}</div>`; return; }
+  document.getElementById('clipCount').textContent = clips.length
+    ? `${clips.length} clip${clips.length > 1 ? 's' : ''} on the marketplace`
+    : 'No clips yet — upload your first session.';
+  box.innerHTML = clips.map(c => `
+    <div class="clip-row">
+      <div>
+        <div>${c.file_name || c.file_path.split('/').pop()}</div>
+        <div class="c-meta">${c.spot} · ${c.session_date} · ${c.size_mb ?? '?'}MB</div>
+      </div>
+      <a href="#" onclick="viewClip('${c.file_path}'); return false;">view</a>
+      <span class="c-meta">${c.status}</span>
+      <button class="c-del" title="delete" onclick="deleteClip('${c.id}', '${c.file_path}')">✕</button>
+    </div>`).join('');
+}
+
+async function viewClip(path) {
+  const { data, error } = await sb.storage.from('clips').createSignedUrl(path, 3600);
+  if (error) { upMsgShow(error.message, 'err'); return; }
+  window.open(data.signedUrl, '_blank');
+}
+
+async function deleteClip(id, path) {
+  if (!confirm('Delete this clip from the marketplace?')) return;
+  await sb.storage.from('clips').remove([path]);
+  await sb.from('clips').delete().eq('id', id);
+  loadClips();
+}
+
+sb.auth.onAuthStateChange((_event, session) => { renderPortal(session); });
+sb.auth.getSession().then(({ data }) => renderPortal(data.session));
+</script>
+</body>
+</html>
