@@ -382,6 +382,7 @@ select option { color: var(--navy); background: var(--white); }
 }
 
 .clip-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+.clip-video { display: block; width: 100%; aspect-ratio: 16/9; object-fit: cover; background: #0E4D73; }
 .clip {
   background: var(--white);
   border: 1px solid #D8E9F4;
@@ -822,7 +823,7 @@ const PILOTS = [
 ];
 
 const CLIP_TEMPLATES = [
-  { title: 'Set wave takeoff', dur: '0:18', mins: 9,  match: 96, price: 150000 },
+  { title: 'Gerupuk — your wave', dur: '0:27', mins: 9,  match: 96, price: 150000 },
   { title: 'Long wall ride',   dur: '0:34', mins: 26, match: 93, price: 195000 },
   { title: 'Duck dive sequence', dur: '0:12', mins: 41, match: 88, price: 90000 },
   { title: 'Cutback combo',    dur: '0:22', mins: 58, match: 86, price: 165000 },
@@ -980,17 +981,21 @@ function renderResults(spot, from) {
     const t = startMins + c.mins;
     const hh = String(Math.floor(t / 60)).padStart(2, '0');
     const mm = String(t % 60).padStart(2, '0');
-    const pilot = PILOTS[i % PILOTS.length];
+    const pilot = i === 0 ? { name: 'gerupuk drone pilot', rating: 4.9 } : PILOTS[i % PILOTS.length];
     const pal = THUMB_PALETTES[i];
+    // top match is the real watermarked drone clip (demo); the rest are mock thumbnails
+    const media = i === 0
+      ? `<video class="clip-video" src="demo-clip.mp4" muted loop playsinline preload="metadata"></video>`
+      : `${thumbSVG(pal, i)}<div class="wm"></div>`;
+    const playAttr = i === 0 ? `onclick="playDemo(this)"` : `title="watermarked preview (demo)"`;
     return `
     <article class="clip" style="animation-delay:${i * 0.08}s">
       <div class="clip-thumb">
-        ${thumbSVG(pal, i)}
-        <div class="wm"></div>
+        ${media}
         <span class="clip-match ${c.match >= 90 ? 'hot' : ''}">${c.match}% you</span>
         <span class="clip-dur">${c.dur}</span>
         <span class="wm-tag">© ${pilot.name} · preview</span>
-        <div class="clip-play" title="watermarked preview (demo)"><span class="tri">▶</span></div>
+        <div class="clip-play" ${playAttr}><span class="tri">▶</span></div>
       </div>
       <div class="clip-body">
         <div class="clip-title">${c.title}</div>
@@ -1004,6 +1009,13 @@ function renderResults(spot, from) {
   }).join('');
 
   document.getElementById('results').classList.add('show');
+}
+
+function playDemo(btn) {
+  const v = btn.parentElement.querySelector('video');
+  if (!v) return;
+  if (v.paused) { v.play(); btn.style.opacity = 0; }
+  else { v.pause(); btn.style.opacity = 1; }
 }
 
 function thumbSVG(pal, seed) {
